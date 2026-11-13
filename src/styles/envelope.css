@@ -1,0 +1,581 @@
+/*
+ * DREAMY NIGHT KEEPSAKE — moonlit-indigo envelope, celestial seal and midnight letter.
+ * The GSAP animation hooks/classes are intentionally retained so the physical opening
+ * sequence remains wired exactly as before; this file changes the visual language only.
+ */
+
+.envelope-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template: 1fr / 1fr;
+  place-items: center;
+  perspective: 1600px;
+  pointer-events: none;
+}
+.envelope-stage > * { grid-area: 1 / 1; }
+
+/* A velvet-like midnight envelope, edged in moonlit foil. */
+.env {
+  position: relative;
+  width: min(86vw, 360px, 58dvh * 1.4);
+  aspect-ratio: 7 / 5;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  filter:
+    drop-shadow(0 36px 52px rgb(0 0 0 / 0.54))
+    drop-shadow(0 0 28px rgb(142 124 185 / 0.16));
+}
+.env::before {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  inset: 2px;
+  border-radius: 15px;
+  pointer-events: none;
+  background:
+    linear-gradient(118deg, rgb(255 255 255 / 0.12), transparent 24% 70%, rgb(0 0 0 / 0.2)),
+    repeating-linear-gradient(8deg, transparent 0 3px, rgb(255 255 255 / 0.016) 3px 4px);
+  mix-blend-mode: screen;
+  opacity: 0.68;
+}
+.env__part { position: absolute; inset: 0; width: 100%; height: 100%; }
+.env__back { z-index: 1; }
+
+/* The invitation card remains physically nested inside the envelope mouth. */
+.env__clip {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  clip-path: inset(-250% 0 0 0);
+}
+.env__card {
+  position: absolute;
+  left: 6%;
+  top: 39%;
+  width: 88%;
+  height: 57%;
+  border-radius: 8px 8px 4px 4px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgb(239 232 255 / 0.22), transparent 68%),
+    repeating-linear-gradient(0deg, transparent 0 23px, rgb(205 190 244 / 0.045) 23px 24px),
+    linear-gradient(180deg, #282047 0%, #17152f 100%);
+  box-shadow:
+    0 8px 18px rgb(0 0 0 / 0.36),
+    inset 0 0 0 1px rgb(209 197 242 / 0.32),
+    inset 0 0 24px rgb(160 145 213 / 0.12);
+  will-change: transform;
+}
+.env__pocket { z-index: 3; }
+
+/* Hinged flap with a shadowed inner face. */
+.env__flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 54%;
+  transform-origin: 50% 0%;
+  transform-style: preserve-3d;
+  z-index: 4;
+  will-change: transform;
+  filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.3));
+}
+.env__flap-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+.env__flap-face--back { transform: rotateX(180deg); }
+
+/* Cool moon halo underneath the envelope. */
+.envelope__glow {
+  width: min(112vw, 620px);
+  height: min(82vw, 470px);
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(183 169 230 / 0.34),
+    rgb(119 101 177 / 0.2) 42%,
+    rgb(69 70 139 / 0.08) 62%,
+    transparent 76%
+  );
+  filter: blur(18px);
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+  z-index: 0;
+}
+
+/* The opening releases tiny celestial sparks rather than warm paper lanterns. */
+.lantern-burst {
+  position: relative;
+  width: min(86vw, 360px, 58dvh * 1.4);
+  aspect-ratio: 7 / 5;
+  z-index: 6;
+  pointer-events: none;
+}
+.lantern-burst__rise {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  margin-left: -16px;
+  width: 32px;
+  will-change: transform, opacity;
+}
+.lantern-burst__sway { display: block; will-change: transform; }
+.lantern-burst__svg {
+  display: block;
+  width: 32px;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 12px rgb(214 203 255 / 0.82)) drop-shadow(0 0 24px rgb(142 124 185 / 0.52));
+}
+
+/* ------------------------------------------------------------------ celestial wax impression */
+.wax-seal {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  z-index: 5;
+  display: grid;
+  justify-items: center;
+  gap: 0.78rem;
+  padding: 10px;
+  border: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+  -webkit-tap-highlight-color: transparent;
+}
+.wax-seal:disabled { cursor: default; }
+.wax-seal__disc {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: clamp(72px, 23vw, 96px);
+  height: clamp(72px, 23vw, 96px);
+  padding: 18%;
+  border-radius: 48% 52% 49% 51% / 51% 47% 53% 49%;
+  background:
+    radial-gradient(ellipse at 31% 20%, rgb(232 224 255 / 0.82), transparent 21%),
+    radial-gradient(ellipse at 35% 27%, #9d8acb 0, #62538f 34%, #342c61 68%, #18162f 100%);
+  box-shadow:
+    inset 2px 3px 5px rgb(255 255 255 / 0.34),
+    inset -4px -7px 12px rgb(8 7 24 / 0.72),
+    inset 0 0 0 1px rgb(229 218 255 / 0.36),
+    0 2px 0 rgb(18 15 43 / 0.9),
+    0 10px 20px rgb(0 0 0 / 0.48),
+    0 0 32px rgb(162 145 224 / 0.34);
+  transform-origin: 50% 55%;
+  will-change: transform, opacity;
+}
+.wax-seal__disc::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 5%;
+  border: 1px solid rgb(235 226 255 / 0.32);
+  border-radius: inherit;
+  box-shadow:
+    inset 0 1px 3px rgb(255 255 255 / 0.2),
+    inset 0 -3px 5px rgb(8 7 24 / 0.5),
+    0 0 0 1px rgb(20 16 47 / 0.34);
+}
+.wax-seal__disc::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse at 30% 16%, rgb(255 255 255 / 0.34), transparent 28%),
+    linear-gradient(145deg, transparent 32%, rgb(8 6 28 / 0.2) 72%, rgb(227 216 255 / 0.16));
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.wax-seal__rim {
+  position: absolute;
+  inset: 11%;
+  border: 1px solid rgb(231 221 255 / 0.36);
+  border-radius: 48% 52% 47% 53%;
+  box-shadow: 0 1px 2px rgb(255 255 255 / 0.16), inset 0 0 5px rgb(12 9 37 / 0.34);
+  pointer-events: none;
+}
+.wax-seal__emboss {
+  position: absolute;
+  inset: 20%;
+  border-radius: 50%;
+  border: 1px solid rgb(21 14 56 / 0.28);
+  box-shadow: inset 0 1px 1px rgb(255 255 255 / 0.28), 0 1px 0 rgb(226 217 255 / 0.18);
+  pointer-events: none;
+}
+.wax-seal__disc .brandlogo {
+  z-index: 1;
+  width: 100%;
+  filter: brightness(1.62) saturate(0.5) drop-shadow(0 1px 1px rgb(10 7 30 / 0.78));
+}
+
+/* Individual wax chips remain independently animated by GSAP. */
+.wax-seal__break-layer {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  width: clamp(72px, 23vw, 96px);
+  height: clamp(72px, 23vw, 96px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.wax-seal__fragment {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  border-radius: 48% 52% 49% 51%;
+  background: radial-gradient(ellipse at 31% 20%, #b3a1dc 0, #75639f 37%, #40366f 72%, #1c193d 100%);
+  box-shadow:
+    inset 1px 2px 3px rgb(255 255 255 / 0.32),
+    inset -3px -4px 7px rgb(8 6 26 / 0.58),
+    0 3px 7px rgb(0 0 0 / 0.34);
+  will-change: transform, opacity;
+}
+.wax-seal__fragment--1 { clip-path: polygon(0 0, 50% 0, 47% 38%, 31% 48%, 0 52%); }
+.wax-seal__fragment--2 { clip-path: polygon(50% 0, 100% 0, 100% 48%, 72% 53%, 47% 38%); }
+.wax-seal__fragment--3 { clip-path: polygon(0 52%, 31% 48%, 49% 63%, 44% 100%, 0 100%); }
+.wax-seal__fragment--4 { clip-path: polygon(47% 38%, 72% 53%, 100% 48%, 100% 100%, 44% 100%, 49% 63%); }
+.wax-seal__fragment--5 {
+  inset: 34%;
+  border-radius: 35% 65% 48% 52%;
+  clip-path: polygon(50% 0, 100% 30%, 76% 100%, 12% 78%, 0 25%);
+  background: linear-gradient(145deg, #c9b9ed, #77649f 58%, #302855);
+}
+.wax-seal__cracks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0;
+}
+.wax-seal__cracks path {
+  fill: none;
+  stroke: rgb(22 15 54 / 0.92);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: bevel;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 1px 0 rgb(239 229 255 / 0.58));
+}
+.wax-seal__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #eee8ff;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.85), 0 0 20px rgb(172 154 230 / 0.52);
+  white-space: nowrap;
+  will-change: opacity, transform;
+}
+.wax-seal__label-line {
+  display: block;
+  width: 15px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d6c9fb);
+}
+.wax-seal__label-line:last-child { transform: rotate(180deg); }
+.wax-seal:focus-visible { outline: none; }
+.wax-seal:focus-visible .wax-seal__disc {
+  outline: 2px solid #e7ddff;
+  outline-offset: 7px;
+}
+
+/* ------------------------------------------------------------------ midnight invitation card */
+.letter-wrap {
+  z-index: 10;
+  pointer-events: none;
+  perspective: 1200px;
+}
+.letter {
+  position: relative;
+  isolation: isolate;
+  width: min(91vw, 500px);
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 24px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: clamp(1.7rem, 5.4vw, 2.8rem) clamp(1.4rem, 5.5vw, 2.75rem);
+  border-radius: 7px;
+  color: #f0eafa;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% -8%, rgb(180 165 229 / 0.24), transparent 38%),
+    radial-gradient(ellipse at 4% 92%, rgb(116 100 174 / 0.16), transparent 35%),
+    radial-gradient(circle at 14% 14%, rgb(235 226 255 / 0.62) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 83% 22%, rgb(235 226 255 / 0.5) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 76% 76%, rgb(235 226 255 / 0.44) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 21% 82%, rgb(235 226 255 / 0.42) 0 1px, transparent 1.8px),
+    linear-gradient(145deg, #242044 0%, #17182f 50%, #10152b 100%);
+  box-shadow:
+    0 38px 100px rgb(0 0 0 / 0.64),
+    0 10px 28px rgb(0 0 0 / 0.36),
+    0 0 0 1px rgb(222 212 255 / 0.32),
+    inset 0 0 0 1px rgb(255 255 255 / 0.07),
+    inset 0 0 54px rgb(151 133 207 / 0.1);
+  will-change: transform, opacity;
+  pointer-events: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(190 177 235 / 0.46) transparent;
+}
+.letter::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 9px;
+  border: 1px solid rgb(213 204 247 / 0.38);
+  border-radius: 3px;
+  pointer-events: none;
+}
+.letter::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 14px;
+  border: 1px solid rgb(213 204 247 / 0.12);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.letter:focus-visible { outline: 2px solid var(--color-moonlight); outline-offset: 5px; }
+.letter__corner {
+  position: absolute;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  border-color: #d5c9fa;
+  border-style: solid;
+  opacity: 0.82;
+  filter: drop-shadow(0 0 5px rgb(185 168 239 / 0.45));
+  pointer-events: none;
+}
+.letter__corner--tl { top: 17px; left: 17px; border-width: 1px 0 0 1px; }
+.letter__corner--tr { top: 17px; right: 17px; border-width: 1px 1px 0 0; }
+.letter__corner--bl { bottom: 17px; left: 17px; border-width: 0 0 1px 1px; }
+.letter__corner--br { bottom: 17px; right: 17px; border-width: 0 1px 1px 0; }
+.letter__header { position: relative; }
+.letter__moon {
+  position: relative;
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin: 0 auto 0.7rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff9ff, #d9d0ef 48%, #9f91c7 100%);
+  box-shadow: 0 0 13px rgb(220 210 255 / 0.6), 0 0 34px rgb(176 159 232 / 0.3);
+}
+.letter__moon::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  left: 9px;
+  top: -4px;
+  border-radius: 50%;
+  background: #242044;
+}
+.letter__eyebrow {
+  display: block;
+  margin: 0 0 0.42rem;
+  color: #c9bde9;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.29em;
+  text-transform: uppercase;
+}
+.letter__logo {
+  display: block;
+  width: min(60%, 236px);
+  margin: 0 auto;
+  filter: drop-shadow(0 0 12px rgb(213 200 255 / 0.22));
+}
+.letter__ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 0.48rem auto 0.2rem;
+  color: #ded5f4;
+}
+.letter__ornament span {
+  width: 42px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c7b9e9);
+}
+.letter__ornament span:last-child { transform: rotate(180deg); }
+.letter__ornament i { font-size: 0.9rem; font-style: normal; text-shadow: 0 0 10px rgb(215 204 255 / 0.62); }
+.letter__kicker {
+  margin: 0.05rem 0 0;
+  color: #e8def8;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 3.5vw, 1.42rem);
+  font-style: italic;
+  letter-spacing: 0.045em;
+}
+.letter__salutation { margin: 1.18rem 0 0; }
+.letter__greeting {
+  margin: 0;
+  color: #bdb0dd;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-style: italic;
+}
+.letter__name {
+  margin: 0.1rem 0 0;
+  color: #f1e9ff;
+  font-family: var(--font-script);
+  font-size: clamp(2.45rem, 8vw, 3.8rem);
+  font-weight: 400;
+  line-height: 1.12;
+  text-shadow: 0 0 16px rgb(193 177 242 / 0.22);
+}
+.letter__name--generic { font-size: clamp(2rem, 7vw, 3rem); }
+.letter__title {
+  margin: 0.15rem 0 0;
+  color: #c9c0df;
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+}
+.letter__message {
+  max-width: 34rem;
+  margin: 1rem auto 0;
+  color: #ddd6eb;
+  font-family: var(--font-body);
+  font-size: clamp(1.02rem, 3.7vw, 1.18rem);
+  line-height: 1.56;
+}
+.letter__divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 1.15rem auto 1rem;
+  color: #d6c9f4;
+  text-shadow: 0 0 10px rgb(181 164 232 / 0.4);
+}
+.letter__divider span {
+  width: 27%;
+  max-width: 112px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(205 192 239 / 0.72));
+}
+.letter__divider span:last-child { transform: rotate(180deg); }
+.letter__divider i { font-size: 1.1rem; font-style: normal; }
+.letter__information {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.68rem;
+  margin: 0;
+  text-align: left;
+}
+.letter__detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.68rem;
+  min-width: 0;
+  padding: 0.82rem 0.76rem;
+  border: 1px solid rgb(195 181 235 / 0.32);
+  border-radius: 4px;
+  background: linear-gradient(145deg, rgb(181 165 224 / 0.12), rgb(22 24 51 / 0.44));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 5px 16px rgb(0 0 0 / 0.12);
+}
+.letter__detail-icon {
+  flex: 0 0 1.48rem;
+  display: grid;
+  place-items: center;
+  width: 1.48rem;
+  height: 1.48rem;
+  border: 1px solid rgb(206 194 240 / 0.5);
+  border-radius: 50%;
+  color: #e7def9;
+  font-family: Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1;
+  box-shadow: 0 0 12px rgb(176 160 229 / 0.16);
+}
+.letter__detail dt {
+  margin: 0 0 0.16rem;
+  color: #c7b9e8;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+.letter__detail dd {
+  margin: 0;
+  color: #f1edf8;
+  font-family: var(--font-body);
+  font-size: clamp(0.92rem, 3.4vw, 1.08rem);
+  line-height: 1.34;
+  overflow-wrap: anywhere;
+}
+.letter__tagline {
+  margin: 1.2rem 0 0;
+  color: #e4d9ff;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 4vw, 1.42rem);
+  font-style: italic;
+  line-height: 1.32;
+  text-shadow: 0 0 14px rgb(180 164 233 / 0.22);
+}
+.letter__footer { margin: 1.05rem 0 0; }
+.letter__footer-rule {
+  display: block;
+  width: 46px;
+  height: 1px;
+  margin: 0 auto 0.68rem;
+  background: linear-gradient(90deg, transparent, #cbbde9, transparent);
+}
+.letter__closing {
+  margin: 0;
+  color: #d9ceeF;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-style: italic;
+}
+.letter__host {
+  margin: 0.45rem 0 0;
+  color: #aaa0c8;
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.025em;
+  line-height: 1.35;
+}
+
+@media (max-width: 390px) {
+  .letter { padding: 1.45rem 1.25rem; }
+  .letter__information { grid-template-columns: 1fr; gap: 0.5rem; }
+  .letter__detail { padding: 0.65rem 0.72rem; }
+  .letter__message { margin-top: 0.8rem; }
+  .letter__divider { margin: 0.85rem auto 0.75rem; }
+  .letter__footer { margin-top: 0.8rem; }
+}
+@media (max-height: 690px) and (min-width: 391px) {
+  .letter { padding-top: 1.2rem; padding-bottom: 1.2rem; }
+  .letter__salutation { margin-top: 0.7rem; }
+  .letter__message { margin-top: 0.65rem; }
+  .letter__divider { margin: 0.7rem auto; }
+  .letter__footer { margin-top: 0.65rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .env, .env__flap, .env__card, .wax-seal__disc, .wax-seal__fragment, .letter { will-change: auto; }
+}

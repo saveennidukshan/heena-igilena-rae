@@ -1,0 +1,14 @@
+node_modules
+dist
+dist-ssr
+qrcodes
+.vercel
+*.local
+.DS_Store
+logs
+*.log
+
+# Local-only working docs (not shared with guests / collaborators)
+plans/
+CLAUDE.md
+.claude/

@@ -1,0 +1,68 @@
+/*
+ * DESIGN TOKENS — "හීන ඉගිලෙන රෑ" (Dreamy Night theme).
+ * Palette hex values are taken exactly from the supplied palette card. Use these vars
+ * everywhere — never hardcode hex in components. RGB triplets exist for rgb(... / alpha).
+ */
+:root {
+  /* ---- Palette ---- */
+  --color-night: #0b132b; /* Night Sky Blue   */
+  --color-twilight: #2c1a4d; /* Twilight Purple  */
+  --color-lavender: #8e7cb9; /* Lavender         */
+  --color-moonlight: #ebd0ce; /* Moonlight Pink   */
+  --color-gold: #f0c05a; /* Warm Gold        */
+  --color-ember: #e8923a; /* Lantern ember (derived) */
+  --color-seal: #8e2b2b; /* Wax seal red (derived)  */
+
+  --rgb-night: 11 19 43;
+  --rgb-twilight: 44 26 77;
+  --rgb-lavender: 142 124 185;
+  --rgb-moonlight: 235 208 206;
+  --rgb-gold: 240 192 90;
+  --rgb-ember: 232 146 58;
+
+  /* ---- Semantic ---- */
+  --bg-top: #070b1b;
+  --bg-mid: #17152f;
+  --bg-bottom: #282044;
+  --text-primary: var(--color-moonlight);
+  --text-muted: rgb(var(--rgb-moonlight) / 0.7);
+  --text-gold: var(--color-gold);
+
+  /* ---- Typography ---- */
+  --font-display: "Cormorant Garamond", "Noto Serif Sinhala", Georgia, serif;
+  --font-body: "EB Garamond", "Noto Serif Sinhala", Georgia, serif;
+  --font-script: "Great Vibes", "Cormorant Garamond", cursive;
+  --font-sinhala: "Noto Serif Sinhala", "Noto Sans Sinhala", serif;
+
+  --fs-xs: clamp(0.78rem, 0.72rem + 0.3vw, 0.9rem);
+  --fs-sm: clamp(0.9rem, 0.84rem + 0.3vw, 1.05rem);
+  --fs-md: clamp(1.05rem, 0.98rem + 0.5vw, 1.25rem);
+  --fs-lg: clamp(1.4rem, 1.2rem + 1.2vw, 2rem);
+  --fs-xl: clamp(2rem, 1.5rem + 3vw, 3.4rem);
+  --fs-2xl: clamp(2.6rem, 1.8rem + 5vw, 5rem);
+
+  /* ---- Spacing / radius ---- */
+  --space-1: 0.4rem;
+  --space-2: 0.8rem;
+  --space-3: 1.2rem;
+  --space-4: 2rem;
+  --space-5: 3.2rem;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 22px;
+
+  /* ---- Motion timings (seconds) — mirrors PLAN §8 / theme/tokens.ts ---- */
+  --t-light: 3.5s;
+  --t-crowd: 3s;
+  --t-swarm: 4s;
+  --t-tilt: 3.5s;
+  --t-logo: 2s;
+  --t-envelope: 2s;
+  --t-open: 2.5s;
+
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---- Glow ---- */
+  --glow-gold: 0 0 24px rgb(var(--rgb-gold) / 0.55), 0 0 60px rgb(var(--rgb-ember) / 0.35);
+  --glow-soft: 0 0 40px rgb(var(--rgb-lavender) / 0.35);
+}

@@ -1,0 +1,42 @@
+/*
+ * VIDEO BACKGROUND — real sky-lantern footage behind the whole experience.
+ * Two stacked <video> layers (intro → looping backdrop) that cross-fade; GSAP owns their
+ * opacity via autoAlpha, so the loop starts hidden and is raised in. A deep dusk gradient
+ * sits behind both so there is never a black flash before the first frame decodes.
+ */
+.video-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #05060f 0%, #140f32 55%, #241544 100%);
+}
+
+.video-bg__layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* 16:9 footage filling a portrait phone: cover + centre keeps the sky edge-to-edge. */
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  /* a touch of depth so the overlaid envelope + letter read clearly on top */
+  will-change: opacity;
+}
+
+/* The loop begins hidden; VideoBackground fades it in as the intro ends. */
+.video-bg__loop {
+  opacity: 0;
+}
+
+/* A soft vignette + lift so the gold letter and controls stay legible over the bright sky. */
+.video-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(130% 100% at 50% 42%, transparent 52%, rgb(5 6 15 / 0.42) 100%),
+    linear-gradient(180deg, rgb(5 6 15 / 0.28) 0%, transparent 26%, transparent 64%, rgb(5 6 15 / 0.46) 100%);
+}
