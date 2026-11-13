@@ -26,6 +26,18 @@
     drop-shadow(0 36px 52px rgb(0 0 0 / 0.48))
     drop-shadow(0 0 28px rgb(240 192 90 / 0.18));
 }
+.env::after {
+  content: "";
+  position: absolute;
+  z-index: 6;
+  inset: 8px;
+  border: 1px solid rgb(255 246 208 / 0.36);
+  border-radius: 11px;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgb(112 52 50 / 0.1),
+    0 0 0 1px rgb(92 45 34 / 0.12);
+}
 .env::before {
   content: "";
   position: absolute;
@@ -68,6 +80,81 @@
 }
 .env__pocket { z-index: 3; }
 
+.env__address {
+  position: absolute;
+  z-index: 4;
+  left: 13%;
+  bottom: 18%;
+  display: grid;
+  justify-items: start;
+  gap: 0.28rem;
+  color: rgb(255 239 184 / 0.82);
+  font-family: var(--font-display);
+  pointer-events: none;
+  transform: rotate(-2deg);
+  text-shadow: 0 1px 2px rgb(44 17 26 / 0.36);
+}
+.env__address-kicker {
+  font-size: clamp(0.52rem, 1.8vw, 0.66rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.env__address-rule {
+  width: 82px;
+  height: 1px;
+  background: linear-gradient(90deg, #f0c05a, transparent);
+  opacity: 0.8;
+}
+.env__address-copy {
+  color: rgb(255 244 211 / 0.7);
+  font-family: var(--font-body);
+  font-size: clamp(0.72rem, 2.2vw, 0.84rem);
+  line-height: 1.16;
+  letter-spacing: 0.04em;
+}
+.env__stamp {
+  position: absolute;
+  z-index: 4;
+  right: 12%;
+  bottom: 16%;
+  display: grid;
+  place-items: center;
+  width: clamp(48px, 13vw, 62px);
+  aspect-ratio: 1;
+  border: 1px solid rgb(255 224 155 / 0.7);
+  border-radius: 50%;
+  color: #ffe5a1;
+  transform: rotate(8deg);
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 3px rgb(112 52 50 / 0.28),
+    inset 0 0 0 4px rgb(255 224 155 / 0.18),
+    0 2px 6px rgb(45 15 24 / 0.25);
+}
+.env__stamp-ring {
+  position: absolute;
+  inset: 5px;
+  border: 1px dashed rgb(255 224 155 / 0.72);
+  border-radius: inherit;
+}
+.env__stamp-star {
+  margin-top: -0.5rem;
+  font-size: 1rem;
+  line-height: 1;
+}
+.env__stamp-label {
+  position: absolute;
+  bottom: 9px;
+  font-family: var(--font-display);
+  font-size: 0.38rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 /* Hinged flap with a shadowed inner face. */
 .env__flap {
   position: absolute;
@@ -107,6 +194,20 @@
   pointer-events: none;
   will-change: opacity, transform;
   z-index: 0;
+}
+.envelope__glow::before,
+.envelope__glow::after {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  border: 1px solid rgb(255 218 143 / 0.14);
+  border-radius: 50%;
+  transform: rotate(12deg) scaleX(1.35);
+}
+.envelope__glow::after {
+  inset: 28%;
+  transform: rotate(-18deg) scaleX(1.5);
+  border-color: rgb(143 62 47 / 0.12);
 }
 
 /* The opening releases tiny champagne sparks. */
@@ -336,6 +437,14 @@
   scrollbar-width: thin;
   scrollbar-color: rgb(190 177 235 / 0.46) transparent;
 }
+.letter::-webkit-scrollbar { width: 7px; }
+.letter::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: #b98546;
+  background-clip: padding-box;
+}
+.letter::-webkit-scrollbar-track { background: transparent; }
 .letter::before {
   content: "";
   position: absolute;

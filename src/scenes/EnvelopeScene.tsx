@@ -232,6 +232,17 @@ export default function EnvelopeScene({ guest, event }: Props) {
             <path d="M2 248 L175 133 L348 248" fill="none" stroke="url(#env-foil-b)" strokeWidth="2" strokeLinejoin="round" />
           </svg>
 
+          <div className="env__address" aria-hidden="true">
+            <span className="env__address-kicker">With warm regards</span>
+            <span className="env__address-rule" />
+            <span className="env__address-copy">An evening beneath<br />one beautiful sky</span>
+          </div>
+          <div className="env__stamp" aria-hidden="true">
+            <span className="env__stamp-ring" />
+            <span className="env__stamp-star">✦</span>
+            <span className="env__stamp-label">Keepsake<br />No. 01</span>
+          </div>
+
           {/* the flap: top-edge hinge with a real back face */}
           <div ref={flapRef} className="env__flap">
             <svg className="env__flap-face env__flap-face--front" viewBox="0 0 350 135" preserveAspectRatio="none">
