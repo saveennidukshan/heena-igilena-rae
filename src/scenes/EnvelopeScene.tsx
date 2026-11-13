@@ -162,24 +162,24 @@ export default function EnvelopeScene({ guest, event }: Props) {
           <svg className="env__part env__back" viewBox="0 0 350 250" preserveAspectRatio="none">
             <defs>
               <linearGradient id="env-body" x1="0.1" y1="0" x2="0.55" y2="1">
-                <stop offset="0" stopColor="#332d5b" />
-                <stop offset="0.46" stopColor="#211d43" />
-                <stop offset="1" stopColor="#11152f" />
+                <stop offset="0" stopColor="#fff8e9" />
+                <stop offset="0.46" stopColor="#ead6b2" />
+                <stop offset="1" stopColor="#c39b62" />
               </linearGradient>
               {/* a metallic gold-foil sweep reused for every gold edge */}
               <linearGradient id="env-foil-a" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stopColor="#8172ad" />
-                <stop offset="0.36" stopColor="#d8c9f6" />
-                <stop offset="0.52" stopColor="#f5f0ff" />
-                <stop offset="0.7" stopColor="#bca9e6" />
-                <stop offset="1" stopColor="#7969a6" />
+                <stop offset="0" stopColor="#8c5a2f" />
+                <stop offset="0.36" stopColor="#d5a84f" />
+                <stop offset="0.52" stopColor="#fff0ad" />
+                <stop offset="0.7" stopColor="#d5a84f" />
+                <stop offset="1" stopColor="#8c5a2f" />
               </linearGradient>
             </defs>
             <rect x="2" y="2" width="346" height="246" rx="16" fill="url(#env-body)" stroke="url(#env-foil-a)" strokeWidth="2.5" />
-            <rect x="6.5" y="6.5" width="337" height="237" rx="12" fill="none" stroke="#ddd3f5" strokeOpacity="0.24" strokeWidth="1" />
-            <rect x="13" y="13" width="324" height="224" rx="9" fill="none" stroke="#ddd3f5" strokeOpacity="0.11" strokeWidth="0.8" />
-            <path d="M26 24 H74 M276 24 H324 M26 226 H74 M276 226 H324" stroke="#ddd3f5" strokeOpacity="0.42" strokeWidth="1" />
-            <path d="M175 17 l4 5 -4 5 -4 -5z M175 223 l4 5 -4 5 -4 -5z" fill="#d9c7f7" opacity="0.72" />
+            <rect x="6.5" y="6.5" width="337" height="237" rx="12" fill="none" stroke="#fff1c8" strokeOpacity="0.62" strokeWidth="1" />
+            <rect x="13" y="13" width="324" height="224" rx="9" fill="none" stroke="#8c5a2f" strokeOpacity="0.28" strokeWidth="0.8" />
+            <path d="M26 24 H74 M276 24 H324 M26 226 H74 M276 226 H324" stroke="#8c5a2f" strokeOpacity="0.58" strokeWidth="1" />
+            <path d="M175 17 l4 5 -4 5 -4 -5z M175 223 l4 5 -4 5 -4 -5z" fill="#8c5a2f" opacity="0.82" />
           </svg>
 
           {/* the sliding card, clipped to the envelope interior (open at the top) */}
@@ -191,16 +191,16 @@ export default function EnvelopeScene({ guest, event }: Props) {
           <svg className="env__part env__pocket" viewBox="0 0 350 250" preserveAspectRatio="none">
             <defs>
               <linearGradient id="env-pocket" x1="0.1" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#3b356a" />
-                <stop offset="0.52" stopColor="#292650" />
-                <stop offset="1" stopColor="#151a36" />
+                <stop offset="0" stopColor="#8d5b48" />
+                <stop offset="0.52" stopColor="#633b3c" />
+                <stop offset="1" stopColor="#3c2631" />
               </linearGradient>
               <linearGradient id="env-foil-b" x1="0" y1="0" x2="1" y2="0.5">
-                <stop offset="0" stopColor="#7969a6" />
-                <stop offset="0.4" stopColor="#d8c9f6" />
-                <stop offset="0.55" stopColor="#f5f0ff" />
-                <stop offset="0.72" stopColor="#bca9e6" />
-                <stop offset="1" stopColor="#8172ad" />
+                <stop offset="0" stopColor="#8c5a2f" />
+                <stop offset="0.4" stopColor="#d5a84f" />
+                <stop offset="0.55" stopColor="#fff0ad" />
+                <stop offset="0.72" stopColor="#d5a84f" />
+                <stop offset="1" stopColor="#8c5a2f" />
               </linearGradient>
               <radialGradient id="env-pocket-sheen" cx="0.5" cy="1.05" r="0.75">
                 <stop offset="0" stopColor="#ffffff" stopOpacity="0.1" />
@@ -219,7 +219,7 @@ export default function EnvelopeScene({ guest, event }: Props) {
               <path d="M175 202 l7 7 -7 7 -7 -7z" />
             </g>
             {/* faint lantern-light star-dust on the paper */}
-            <g fill="#d9c7f7" opacity="0.16">
+            <g fill="#f7d98a" opacity="0.28">
               <circle cx="46" cy="196" r="1.1" />
               <circle cx="104" cy="228" r="1.4" />
               <circle cx="250" cy="208" r="1.2" />
@@ -237,34 +237,34 @@ export default function EnvelopeScene({ guest, event }: Props) {
             <svg className="env__flap-face env__flap-face--front" viewBox="0 0 350 135" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="env-flap" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#494274" />
-                  <stop offset="0.55" stopColor="#332e5d" />
-                  <stop offset="1" stopColor="#1b1b3d" />
+                  <stop offset="0" stopColor="#9b684d" />
+                  <stop offset="0.55" stopColor="#6b4040" />
+                  <stop offset="1" stopColor="#402832" />
                 </linearGradient>
                 <linearGradient id="env-foil-c" x1="0" y1="0" x2="1" y2="0.4">
-                  <stop offset="0" stopColor="#7969a6" />
-                  <stop offset="0.4" stopColor="#d8c9f6" />
-                  <stop offset="0.55" stopColor="#f5f0ff" />
-                  <stop offset="0.72" stopColor="#bca9e6" />
-                  <stop offset="1" stopColor="#8172ad" />
+                  <stop offset="0" stopColor="#8c5a2f" />
+                  <stop offset="0.4" stopColor="#d5a84f" />
+                  <stop offset="0.55" stopColor="#fff0ad" />
+                  <stop offset="0.72" stopColor="#d5a84f" />
+                  <stop offset="1" stopColor="#8c5a2f" />
                 </linearGradient>
               </defs>
               <path d="M1 1 L349 1 L175 133 Z" fill="url(#env-flap)" stroke="url(#env-foil-c)" strokeWidth="2.5" strokeLinejoin="round" />
               {/* inset gold liner + a hairline highlight along the hinge */}
-              <path d="M15 7 L335 7 L175 120 Z" fill="none" stroke="#d9c7f7" strokeOpacity="0.38" strokeWidth="1" strokeLinejoin="round" />
+              <path d="M15 7 L335 7 L175 120 Z" fill="none" stroke="#fff0b0" strokeOpacity="0.62" strokeWidth="1" strokeLinejoin="round" />
               <path d="M2 2.5 L348 2.5" stroke="#ffffff" strokeOpacity="0.2" strokeWidth="1.5" />
-              <path d="M175 19 l8 8 -8 8 -8 -8z" fill="none" stroke="#d8c9f6" strokeOpacity="0.55" strokeWidth="1" />
-              <circle cx="175" cy="27" r="2" fill="#f6f0ff" fillOpacity="0.72" />
+              <path d="M175 19 l8 8 -8 8 -8 -8z" fill="none" stroke="#fff0b0" strokeOpacity="0.78" strokeWidth="1" />
+              <circle cx="175" cy="27" r="2" fill="#fff5c9" fillOpacity="0.9" />
             </svg>
             <svg className="env__flap-face env__flap-face--back" viewBox="0 0 350 135" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="env-flap-back" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#17152f" />
-                  <stop offset="1" stopColor="#101329" />
+                  <stop offset="0" stopColor="#3e2834" />
+                  <stop offset="1" stopColor="#211824" />
                 </linearGradient>
               </defs>
-              <path d="M1 1 L349 1 L175 133 Z" fill="url(#env-flap-back)" stroke="#d9c7f7" strokeOpacity="0.3" strokeWidth="1.5" strokeLinejoin="round" />
-              <path d="M16 8 L334 8 L175 116 Z" fill="none" stroke="#d9c7f7" strokeOpacity="0.32" strokeWidth="1" strokeLinejoin="round" />
+              <path d="M1 1 L349 1 L175 133 Z" fill="url(#env-flap-back)" stroke="#f0c66b" strokeOpacity="0.56" strokeWidth="1.5" strokeLinejoin="round" />
+              <path d="M16 8 L334 8 L175 116 Z" fill="none" stroke="#f0c66b" strokeOpacity="0.42" strokeWidth="1" strokeLinejoin="round" />
             </svg>
           </div>
 
