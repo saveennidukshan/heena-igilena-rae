@@ -1,5 +1,5 @@
 /*
- * DREAMY NIGHT KEEPSAKE — moonlit-indigo envelope, celestial seal and midnight letter.
+ * CHAMPAGNE KEEPSAKE — ivory envelope, plum lining, art-deco foil and burgundy seal.
  * The GSAP animation hooks/classes are intentionally retained so the physical opening
  * sequence remains wired exactly as before; this file changes the visual language only.
  */
@@ -15,7 +15,7 @@
 }
 .envelope-stage > * { grid-area: 1 / 1; }
 
-/* A velvet-like midnight envelope, edged in moonlit foil. */
+/* A tactile ivory envelope, edged in champagne foil. */
 .env {
   position: relative;
   width: min(86vw, 360px, 58dvh * 1.4);
@@ -23,8 +23,8 @@
   transform-style: preserve-3d;
   will-change: transform, opacity;
   filter:
-    drop-shadow(0 36px 52px rgb(0 0 0 / 0.54))
-    drop-shadow(0 0 28px rgb(142 124 185 / 0.16));
+    drop-shadow(0 36px 52px rgb(0 0 0 / 0.48))
+    drop-shadow(0 0 28px rgb(240 192 90 / 0.18));
 }
 .env::before {
   content: "";
@@ -34,8 +34,8 @@
   border-radius: 15px;
   pointer-events: none;
   background:
-    linear-gradient(118deg, rgb(255 255 255 / 0.12), transparent 24% 70%, rgb(0 0 0 / 0.2)),
-    repeating-linear-gradient(8deg, transparent 0 3px, rgb(255 255 255 / 0.016) 3px 4px);
+    linear-gradient(118deg, rgb(255 255 255 / 0.3), transparent 24% 70%, rgb(82 42 27 / 0.12)),
+    repeating-linear-gradient(8deg, transparent 0 3px, rgb(126 83 40 / 0.035) 3px 4px);
   mix-blend-mode: screen;
   opacity: 0.68;
 }
@@ -57,13 +57,13 @@
   height: 57%;
   border-radius: 8px 8px 4px 4px;
   background:
-    radial-gradient(ellipse at 50% 0%, rgb(239 232 255 / 0.22), transparent 68%),
-    repeating-linear-gradient(0deg, transparent 0 23px, rgb(205 190 244 / 0.045) 23px 24px),
-    linear-gradient(180deg, #282047 0%, #17152f 100%);
+    radial-gradient(ellipse at 50% 0%, rgb(255 247 218 / 0.72), transparent 68%),
+    repeating-linear-gradient(0deg, transparent 0 23px, rgb(143 96 54 / 0.06) 23px 24px),
+    linear-gradient(180deg, #fff8e8 0%, #ead4ae 100%);
   box-shadow:
     0 8px 18px rgb(0 0 0 / 0.36),
-    inset 0 0 0 1px rgb(209 197 242 / 0.32),
-    inset 0 0 24px rgb(160 145 213 / 0.12);
+    inset 0 0 0 1px rgb(130 83 38 / 0.3),
+    inset 0 0 24px rgb(255 255 255 / 0.34);
   will-change: transform;
 }
 .env__pocket { z-index: 3; }
@@ -90,16 +90,16 @@
 }
 .env__flap-face--back { transform: rotateX(180deg); }
 
-/* Cool moon halo underneath the envelope. */
+/* Warm halo underneath the envelope. */
 .envelope__glow {
   width: min(112vw, 620px);
   height: min(82vw, 470px);
   border-radius: 50%;
   background: radial-gradient(
     closest-side,
-    rgb(183 169 230 / 0.34),
-    rgb(119 101 177 / 0.2) 42%,
-    rgb(69 70 139 / 0.08) 62%,
+    rgb(240 192 90 / 0.3),
+    rgb(191 124 73 / 0.18) 42%,
+    rgb(112 52 50 / 0.1) 62%,
     transparent 76%
   );
   filter: blur(18px);
@@ -109,7 +109,7 @@
   z-index: 0;
 }
 
-/* The opening releases tiny celestial sparks rather than warm paper lanterns. */
+/* The opening releases tiny champagne sparks. */
 .lantern-burst {
   position: relative;
   width: min(86vw, 360px, 58dvh * 1.4);
@@ -131,10 +131,10 @@
   width: 32px;
   height: auto;
   overflow: visible;
-  filter: drop-shadow(0 0 12px rgb(214 203 255 / 0.82)) drop-shadow(0 0 24px rgb(142 124 185 / 0.52));
+  filter: drop-shadow(0 0 12px rgb(255 230 148 / 0.9)) drop-shadow(0 0 24px rgb(190 112 58 / 0.46));
 }
 
-/* ------------------------------------------------------------------ celestial wax impression */
+/* ------------------------------------------------------------------ burgundy wax impression */
 .wax-seal {
   position: absolute;
   left: 50%;
@@ -163,15 +163,15 @@
   padding: 18%;
   border-radius: 48% 52% 49% 51% / 51% 47% 53% 49%;
   background:
-    radial-gradient(ellipse at 31% 20%, rgb(232 224 255 / 0.82), transparent 21%),
-    radial-gradient(ellipse at 35% 27%, #9d8acb 0, #62538f 34%, #342c61 68%, #18162f 100%);
+    radial-gradient(ellipse at 31% 20%, rgb(255 231 188 / 0.64), transparent 21%),
+    radial-gradient(ellipse at 35% 27%, #c66b54 0, #8e2b2b 34%, #5b1f2b 68%, #321624 100%);
   box-shadow:
     inset 2px 3px 5px rgb(255 255 255 / 0.34),
     inset -4px -7px 12px rgb(8 7 24 / 0.72),
-    inset 0 0 0 1px rgb(229 218 255 / 0.36),
-    0 2px 0 rgb(18 15 43 / 0.9),
+    inset 0 0 0 1px rgb(255 222 157 / 0.44),
+    0 2px 0 rgb(48 16 26 / 0.9),
     0 10px 20px rgb(0 0 0 / 0.48),
-    0 0 32px rgb(162 145 224 / 0.34);
+    0 0 32px rgb(216 129 65 / 0.34);
   transform-origin: 50% 55%;
   will-change: transform, opacity;
 }
@@ -180,12 +180,12 @@
   position: absolute;
   z-index: -1;
   inset: 5%;
-  border: 1px solid rgb(235 226 255 / 0.32);
+  border: 1px solid rgb(255 229 173 / 0.36);
   border-radius: inherit;
   box-shadow:
     inset 0 1px 3px rgb(255 255 255 / 0.2),
-    inset 0 -3px 5px rgb(8 7 24 / 0.5),
-    0 0 0 1px rgb(20 16 47 / 0.34);
+    inset 0 -3px 5px rgb(43 12 23 / 0.5),
+    0 0 0 1px rgb(63 18 27 / 0.34);
 }
 .wax-seal__disc::after {
   content: "";
@@ -195,30 +195,30 @@
   border-radius: inherit;
   background:
     radial-gradient(ellipse at 30% 16%, rgb(255 255 255 / 0.34), transparent 28%),
-    linear-gradient(145deg, transparent 32%, rgb(8 6 28 / 0.2) 72%, rgb(227 216 255 / 0.16));
+    linear-gradient(145deg, transparent 32%, rgb(55 14 24 / 0.2) 72%, rgb(255 218 143 / 0.16));
   mix-blend-mode: screen;
   pointer-events: none;
 }
 .wax-seal__rim {
   position: absolute;
   inset: 11%;
-  border: 1px solid rgb(231 221 255 / 0.36);
+  border: 1px solid rgb(255 226 164 / 0.44);
   border-radius: 48% 52% 47% 53%;
-  box-shadow: 0 1px 2px rgb(255 255 255 / 0.16), inset 0 0 5px rgb(12 9 37 / 0.34);
+  box-shadow: 0 1px 2px rgb(255 255 255 / 0.16), inset 0 0 5px rgb(55 14 24 / 0.34);
   pointer-events: none;
 }
 .wax-seal__emboss {
   position: absolute;
   inset: 20%;
   border-radius: 50%;
-  border: 1px solid rgb(21 14 56 / 0.28);
-  box-shadow: inset 0 1px 1px rgb(255 255 255 / 0.28), 0 1px 0 rgb(226 217 255 / 0.18);
+  border: 1px solid rgb(50 14 25 / 0.34);
+  box-shadow: inset 0 1px 1px rgb(255 255 255 / 0.28), 0 1px 0 rgb(255 225 164 / 0.22);
   pointer-events: none;
 }
 .wax-seal__disc .brandlogo {
   z-index: 1;
   width: 100%;
-  filter: brightness(1.62) saturate(0.5) drop-shadow(0 1px 1px rgb(10 7 30 / 0.78));
+  filter: brightness(1.8) saturate(0.35) sepia(0.22) drop-shadow(0 1px 1px rgb(43 12 23 / 0.78));
 }
 
 /* Individual wax chips remain independently animated by GSAP. */
@@ -236,7 +236,7 @@
   inset: 0;
   opacity: 0;
   border-radius: 48% 52% 49% 51%;
-  background: radial-gradient(ellipse at 31% 20%, #b3a1dc 0, #75639f 37%, #40366f 72%, #1c193d 100%);
+  background: radial-gradient(ellipse at 31% 20%, #e0a274 0, #9e3b35 37%, #672331 72%, #321624 100%);
   box-shadow:
     inset 1px 2px 3px rgb(255 255 255 / 0.32),
     inset -3px -4px 7px rgb(8 6 26 / 0.58),
@@ -251,7 +251,7 @@
   inset: 34%;
   border-radius: 35% 65% 48% 52%;
   clip-path: polygon(50% 0, 100% 30%, 76% 100%, 12% 78%, 0 25%);
-  background: linear-gradient(145deg, #c9b9ed, #77649f 58%, #302855);
+  background: linear-gradient(145deg, #e5a56f, #9e3b35 58%, #4e1b2a);
 }
 .wax-seal__cracks {
   position: absolute;
@@ -263,25 +263,25 @@
 }
 .wax-seal__cracks path {
   fill: none;
-  stroke: rgb(22 15 54 / 0.92);
+  stroke: rgb(55 14 24 / 0.92);
   stroke-width: 3.2;
   stroke-linecap: round;
   stroke-linejoin: bevel;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  filter: drop-shadow(0 1px 0 rgb(239 229 255 / 0.58));
+  filter: drop-shadow(0 1px 0 rgb(255 229 173 / 0.58));
 }
 .wax-seal__label {
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  color: #eee8ff;
+  color: #fff3cf;
   font-family: var(--font-display);
   font-size: var(--fs-sm);
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  text-shadow: 0 2px 12px rgb(0 0 0 / 0.85), 0 0 20px rgb(172 154 230 / 0.52);
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.72), 0 0 20px rgb(240 192 90 / 0.42);
   white-space: nowrap;
   will-change: opacity, transform;
 }
@@ -289,16 +289,16 @@
   display: block;
   width: 15px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #d6c9fb);
+  background: linear-gradient(90deg, transparent, #f0c05a);
 }
 .wax-seal__label-line:last-child { transform: rotate(180deg); }
 .wax-seal:focus-visible { outline: none; }
 .wax-seal:focus-visible .wax-seal__disc {
-  outline: 2px solid #e7ddff;
+  outline: 2px solid #f6d889;
   outline-offset: 7px;
 }
 
-/* ------------------------------------------------------------------ midnight invitation card */
+/* ------------------------------------------------------------------ warm ivory invitation card */
 .letter-wrap {
   z-index: 10;
   pointer-events: none;
@@ -315,22 +315,22 @@
   -webkit-overflow-scrolling: touch;
   padding: clamp(1.7rem, 5.4vw, 2.8rem) clamp(1.4rem, 5.5vw, 2.75rem);
   border-radius: 7px;
-  color: #f0eafa;
+  color: #4a2930;
   text-align: center;
   background:
-    radial-gradient(ellipse at 50% -8%, rgb(180 165 229 / 0.24), transparent 38%),
-    radial-gradient(ellipse at 4% 92%, rgb(116 100 174 / 0.16), transparent 35%),
-    radial-gradient(circle at 14% 14%, rgb(235 226 255 / 0.62) 0 1px, transparent 1.7px),
-    radial-gradient(circle at 83% 22%, rgb(235 226 255 / 0.5) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 76% 76%, rgb(235 226 255 / 0.44) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 21% 82%, rgb(235 226 255 / 0.42) 0 1px, transparent 1.8px),
-    linear-gradient(145deg, #242044 0%, #17182f 50%, #10152b 100%);
+    radial-gradient(ellipse at 50% -8%, rgb(255 246 208 / 0.78), transparent 38%),
+    radial-gradient(ellipse at 4% 92%, rgb(189 117 67 / 0.14), transparent 35%),
+    radial-gradient(circle at 14% 14%, rgb(152 92 44 / 0.34) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 83% 22%, rgb(152 92 44 / 0.28) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 76% 76%, rgb(152 92 44 / 0.24) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 21% 82%, rgb(152 92 44 / 0.22) 0 1px, transparent 1.8px),
+    linear-gradient(145deg, #fff8e9 0%, #f1dfba 50%, #dfc18d 100%);
   box-shadow:
     0 38px 100px rgb(0 0 0 / 0.64),
     0 10px 28px rgb(0 0 0 / 0.36),
-    0 0 0 1px rgb(222 212 255 / 0.32),
-    inset 0 0 0 1px rgb(255 255 255 / 0.07),
-    inset 0 0 54px rgb(151 133 207 / 0.1);
+    0 0 0 1px rgb(138 88 42 / 0.42),
+    inset 0 0 0 1px rgb(255 255 255 / 0.55),
+    inset 0 0 54px rgb(169 111 57 / 0.12);
   will-change: transform, opacity;
   pointer-events: auto;
   scrollbar-width: thin;
@@ -341,7 +341,7 @@
   position: absolute;
   z-index: -1;
   inset: 9px;
-  border: 1px solid rgb(213 204 247 / 0.38);
+  border: 1px solid rgb(138 88 42 / 0.4);
   border-radius: 3px;
   pointer-events: none;
 }
@@ -350,7 +350,7 @@
   position: absolute;
   z-index: -1;
   inset: 14px;
-  border: 1px solid rgb(213 204 247 / 0.12);
+  border: 1px solid rgb(138 88 42 / 0.18);
   border-radius: 2px;
   pointer-events: none;
 }
@@ -360,10 +360,10 @@
   z-index: 1;
   width: 22px;
   height: 22px;
-  border-color: #d5c9fa;
+  border-color: #9a6734;
   border-style: solid;
   opacity: 0.82;
-  filter: drop-shadow(0 0 5px rgb(185 168 239 / 0.45));
+  filter: drop-shadow(0 0 5px rgb(240 192 90 / 0.4));
   pointer-events: none;
 }
 .letter__corner--tl { top: 17px; left: 17px; border-width: 1px 0 0 1px; }
@@ -378,8 +378,8 @@
   height: 28px;
   margin: 0 auto 0.7rem;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff9ff, #d9d0ef 48%, #9f91c7 100%);
-  box-shadow: 0 0 13px rgb(220 210 255 / 0.6), 0 0 34px rgb(176 159 232 / 0.3);
+  background: radial-gradient(circle at 35% 30%, #fffdf2, #f1d991 48%, #c58a43 100%);
+  box-shadow: 0 0 13px rgb(255 222 139 / 0.6), 0 0 34px rgb(205 129 54 / 0.3);
 }
 .letter__moon::after {
   content: "";
@@ -389,12 +389,12 @@
   left: 9px;
   top: -4px;
   border-radius: 50%;
-  background: #242044;
+  background: #fff1d2;
 }
 .letter__eyebrow {
   display: block;
   margin: 0 0 0.42rem;
-  color: #c9bde9;
+  color: #8a5a35;
   font-family: var(--font-display);
   font-size: 0.7rem;
   font-weight: 600;
@@ -405,7 +405,7 @@
   display: block;
   width: min(60%, 236px);
   margin: 0 auto;
-  filter: drop-shadow(0 0 12px rgb(213 200 255 / 0.22));
+  filter: drop-shadow(0 0 12px rgb(157 99 42 / 0.22));
 }
 .letter__ornament {
   display: flex;
@@ -413,18 +413,18 @@
   justify-content: center;
   gap: 0.8rem;
   margin: 0.48rem auto 0.2rem;
-  color: #ded5f4;
+  color: #8c5a2f;
 }
 .letter__ornament span {
   width: 42px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #c7b9e9);
+  background: linear-gradient(90deg, transparent, #b27b3c);
 }
 .letter__ornament span:last-child { transform: rotate(180deg); }
-.letter__ornament i { font-size: 0.9rem; font-style: normal; text-shadow: 0 0 10px rgb(215 204 255 / 0.62); }
+.letter__ornament i { font-size: 0.9rem; font-style: normal; text-shadow: 0 0 10px rgb(214 157 65 / 0.42); }
 .letter__kicker {
   margin: 0.05rem 0 0;
-  color: #e8def8;
+  color: #6d3e3a;
   font-family: var(--font-display);
   font-size: clamp(1.15rem, 3.5vw, 1.42rem);
   font-style: italic;
@@ -433,31 +433,31 @@
 .letter__salutation { margin: 1.18rem 0 0; }
 .letter__greeting {
   margin: 0;
-  color: #bdb0dd;
+  color: #8c6b5b;
   font-family: var(--font-body);
   font-size: var(--fs-sm);
   font-style: italic;
 }
 .letter__name {
   margin: 0.1rem 0 0;
-  color: #f1e9ff;
+  color: #5b2b31;
   font-family: var(--font-script);
   font-size: clamp(2.45rem, 8vw, 3.8rem);
   font-weight: 400;
   line-height: 1.12;
-  text-shadow: 0 0 16px rgb(193 177 242 / 0.22);
+  text-shadow: 0 0 16px rgb(170 99 48 / 0.2);
 }
 .letter__name--generic { font-size: clamp(2rem, 7vw, 3rem); }
 .letter__title {
   margin: 0.15rem 0 0;
-  color: #c9c0df;
+  color: #806253;
   font-family: var(--font-body);
   font-size: var(--fs-sm);
 }
 .letter__message {
   max-width: 34rem;
   margin: 1rem auto 0;
-  color: #ddd6eb;
+  color: #5e4a42;
   font-family: var(--font-body);
   font-size: clamp(1.02rem, 3.7vw, 1.18rem);
   line-height: 1.56;
@@ -468,14 +468,14 @@
   justify-content: center;
   gap: 0.8rem;
   margin: 1.15rem auto 1rem;
-  color: #d6c9f4;
-  text-shadow: 0 0 10px rgb(181 164 232 / 0.4);
+  color: #9b6531;
+  text-shadow: 0 0 10px rgb(197 136 52 / 0.34);
 }
 .letter__divider span {
   width: 27%;
   max-width: 112px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(205 192 239 / 0.72));
+  background: linear-gradient(90deg, transparent, rgb(175 116 49 / 0.72));
 }
 .letter__divider span:last-child { transform: rotate(180deg); }
 .letter__divider i { font-size: 1.1rem; font-style: normal; }
@@ -492,9 +492,9 @@
   gap: 0.68rem;
   min-width: 0;
   padding: 0.82rem 0.76rem;
-  border: 1px solid rgb(195 181 235 / 0.32);
+  border: 1px solid rgb(150 98 44 / 0.32);
   border-radius: 4px;
-  background: linear-gradient(145deg, rgb(181 165 224 / 0.12), rgb(22 24 51 / 0.44));
+  background: linear-gradient(145deg, rgb(255 245 211 / 0.22), rgb(76 38 41 / 0.32));
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 5px 16px rgb(0 0 0 / 0.12);
 }
 .letter__detail-icon {
@@ -503,17 +503,17 @@
   place-items: center;
   width: 1.48rem;
   height: 1.48rem;
-  border: 1px solid rgb(206 194 240 / 0.5);
+  border: 1px solid rgb(157 99 42 / 0.5);
   border-radius: 50%;
-  color: #e7def9;
+  color: #7d4938;
   font-family: Georgia, serif;
   font-size: 1.05rem;
   line-height: 1;
-  box-shadow: 0 0 12px rgb(176 160 229 / 0.16);
+  box-shadow: 0 0 12px rgb(194 126 47 / 0.16);
 }
 .letter__detail dt {
   margin: 0 0 0.16rem;
-  color: #c7b9e8;
+  color: #8c5a35;
   font-family: var(--font-display);
   font-size: 0.68rem;
   font-weight: 600;
@@ -522,7 +522,7 @@
 }
 .letter__detail dd {
   margin: 0;
-  color: #f1edf8;
+  color: #4f3430;
   font-family: var(--font-body);
   font-size: clamp(0.92rem, 3.4vw, 1.08rem);
   line-height: 1.34;
@@ -530,12 +530,12 @@
 }
 .letter__tagline {
   margin: 1.2rem 0 0;
-  color: #e4d9ff;
+  color: #7e4038;
   font-family: var(--font-display);
   font-size: clamp(1.15rem, 4vw, 1.42rem);
   font-style: italic;
   line-height: 1.32;
-  text-shadow: 0 0 14px rgb(180 164 233 / 0.22);
+  text-shadow: 0 0 14px rgb(185 111 49 / 0.22);
 }
 .letter__footer { margin: 1.05rem 0 0; }
 .letter__footer-rule {
@@ -543,18 +543,18 @@
   width: 46px;
   height: 1px;
   margin: 0 auto 0.68rem;
-  background: linear-gradient(90deg, transparent, #cbbde9, transparent);
+  background: linear-gradient(90deg, transparent, #b17a3b, transparent);
 }
 .letter__closing {
   margin: 0;
-  color: #d9ceeF;
+  color: #704338;
   font-family: var(--font-display);
   font-size: 1.08rem;
   font-style: italic;
 }
 .letter__host {
   margin: 0.45rem 0 0;
-  color: #aaa0c8;
+  color: #846858;
   font-family: var(--font-body);
   font-size: var(--fs-xs);
   letter-spacing: 0.025em;
