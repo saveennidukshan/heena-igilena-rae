@@ -260,7 +260,6 @@ export default function VideoBackground({ onIntroSettled }: Props) {
     const m = document.querySelector<HTMLElement>(".masthead");
     if (!m) return;
     gsap.killTweensOf(m);
-    gsap.set(m, { xPercent: -50, yPercent: -50 });
 
     // The event mark gets a dedicated, genuinely centred beat before the envelope arrives.
     // In reduced-motion mode the same title beat is static during the short lighting phase.

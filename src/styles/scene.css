@@ -116,13 +116,12 @@
 
 .masthead {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  inset: 0;
+  margin: auto;
   display: grid;
   place-items: center;
   width: min(68vw, 440px);
   height: min(42svh, 330px);
-  transform: translate(-50%, -50%);
   z-index: 5;
   opacity: 0;
   pointer-events: none;
