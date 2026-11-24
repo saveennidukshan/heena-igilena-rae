@@ -50,3 +50,33 @@
 @media (max-height: 520px) and (orientation: landscape) {
   .video-bg__layer { object-position: 50% 44%; }
 }
+
+.video-tap-start {
+  position: fixed;
+  left: 50%;
+  bottom: max(15vh, calc(env(safe-area-inset-bottom) + 48px));
+  transform: translateX(-50%);
+  z-index: 70;
+  min-height: 48px;
+  padding: 0.7rem 1.6rem;
+  border-radius: 999px;
+  border: 1px solid rgb(215 203 249 / 0.5);
+  background: linear-gradient(145deg, rgb(27 25 58 / 0.78), rgb(10 14 35 / 0.76));
+  color: #f4ecd2;
+  font-size: var(--fs-sm, 0.95rem);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  -webkit-tap-highlight-color: transparent;
+  animation: video-tap-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes video-tap-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(244 210 140 / 0.35); }
+  50% { box-shadow: 0 0 0 10px rgb(244 210 140 / 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-tap-start { animation: none; }
+}

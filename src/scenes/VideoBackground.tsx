@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { useScenePhase, atOrAfter } from "./sceneContext";
+import { useScenePhase, useController, atOrAfter } from "./sceneContext";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
 import "../styles/video.css";
 
@@ -23,11 +23,25 @@ const CROSSFADE_LEAD = 0.85; // begin the dissolve this long before the intro en
 
 const INTRO_SRC = `${import.meta.env.BASE_URL}lantern-intro.mp4`;
 const LOOP_SRC = `${import.meta.env.BASE_URL}lantern-loop.mp4`;
+const INTRO_POSTER = `${import.meta.env.BASE_URL}lantern-intro-poster.jpg`;
+const LOOP_POSTER = `${import.meta.env.BASE_URL}lantern-loop-poster.jpg`;
+
+const INTRO_START_TIMEOUT_MS = 12000;
+
+interface Props {
+  onIntroSettled?: () => void;
+}
 
 /** The video background + the gold masthead reveal that used to live in CameraTilt. */
-export default function VideoBackground() {
+export default function VideoBackground({ onIntroSettled }: Props) {
   const phase = useScenePhase();
+  const controller = useController();
   const reduced = usePrefersReducedMotion();
+  const [needsTap, setNeedsTap] = useState(false);
+  const introPlayedRef = useRef(false);
+  const loopPrimedRef = useRef(false);
+  const settledCbRef = useRef(onIntroSettled);
+  settledCbRef.current = onIntroSettled;
   const introRef = useRef<HTMLVideoElement>(null);
   const loopRef = useRef<HTMLVideoElement>(null);
   const startedRef = useRef(false);
@@ -96,6 +110,8 @@ export default function VideoBackground() {
       startedRef.current = false;
       loopShownRef.current = false;
       keepLoopRef.current = false;
+      introPlayedRef.current = false;
+      setNeedsTap(false);
       intro.pause();
       loop.pause();
       try {
@@ -115,6 +131,7 @@ export default function VideoBackground() {
     if (atOrAfter(phase, "envelope")) {
       startedRef.current = true;
       keepLoopRef.current = true;
+      setNeedsTap(false);
       showLoop(true);
       void loop.play().catch(() => {});
       return;
@@ -130,9 +147,75 @@ export default function VideoBackground() {
       } catch {
         /* ignore */
       }
-      void intro.play().catch(() => {});
+      controller.hold();
+      intro.play().catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "NotAllowedError") {
+          setNeedsTap(true);
+          settledCbRef.current?.();
+        }
+      });
     }
-  }, [phase, reduced, showLoop]);
+  }, [phase, reduced, showLoop, controller]);
+
+  useEffect(() => {
+    if (reduced || phase !== "lighting" || needsTap) return;
+    const t = window.setTimeout(() => {
+      if (introPlayedRef.current) return;
+      controller.skip();
+      settledCbRef.current?.();
+    }, INTRO_START_TIMEOUT_MS);
+    return () => window.clearTimeout(t);
+  }, [phase, reduced, needsTap, controller]);
+
+  useEffect(() => {
+    const intro = introRef.current;
+    const loop = loopRef.current;
+    if (!intro || !loop || reduced) return;
+
+    const onPlaying = () => {
+      introPlayedRef.current = true;
+      setNeedsTap(false);
+      settledCbRef.current?.();
+      controller.resume();
+      if (!loopPrimedRef.current) {
+        loopPrimedRef.current = true;
+        loop.preload = "auto";
+        loop.load();
+      }
+    };
+    const onStall = () => {
+      if (loopShownRef.current || !startedRef.current) return;
+      controller.hold();
+    };
+    const onVisible = () => {
+      if (document.hidden || loopShownRef.current || !introPlayedRef.current) return;
+      if (intro.paused && !intro.ended) void intro.play().catch(() => {});
+    };
+    intro.addEventListener("playing", onPlaying);
+    intro.addEventListener("waiting", onStall);
+    intro.addEventListener("pause", onStall);
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      intro.removeEventListener("playing", onPlaying);
+      intro.removeEventListener("waiting", onStall);
+      intro.removeEventListener("pause", onStall);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [controller, reduced]);
+
+  const handleTapToStart = () => {
+    const intro = introRef.current;
+    const loop = loopRef.current;
+    if (!intro || !loop) return;
+    setNeedsTap(false);
+    void intro.play().catch(() => {});
+    loop
+      .play()
+      .then(() => {
+        if (!loopShownRef.current) loop.pause();
+      })
+      .catch(() => {});
+  };
 
   // --- crossfade to the loop as the intro runs out ---------------------------
   useEffect(() => {
@@ -204,26 +287,35 @@ export default function VideoBackground() {
   );
 
   return (
-    <div className="video-bg" aria-hidden="true">
-      <video
-        ref={introRef}
-        className="video-bg__layer video-bg__intro"
-        src={INTRO_SRC}
-        muted
-        playsInline
-        preload="auto"
-        disablePictureInPicture
-      />
-      <video
-        ref={loopRef}
-        className="video-bg__layer video-bg__loop"
-        src={LOOP_SRC}
-        muted
-        playsInline
-        loop
-        preload="auto"
-        disablePictureInPicture
-      />
-    </div>
+    <>
+      <div className="video-bg" aria-hidden="true">
+        <video
+          ref={introRef}
+          className="video-bg__layer video-bg__intro"
+          src={INTRO_SRC}
+          poster={INTRO_POSTER}
+          muted
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+        />
+        <video
+          ref={loopRef}
+          className="video-bg__layer video-bg__loop"
+          src={LOOP_SRC}
+          poster={LOOP_POSTER}
+          muted
+          playsInline
+          loop
+          preload={reduced ? "auto" : "metadata"}
+          disablePictureInPicture
+        />
+      </div>
+      {needsTap && (
+        <button type="button" className="video-tap-start" onClick={handleTapToStart}>
+          Tap to open your invitation
+        </button>
+      )}
+    </>
   );
 }

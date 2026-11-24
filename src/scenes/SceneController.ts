@@ -39,6 +39,8 @@ const REDUCED: Partial<Record<Phase, number>> = {
 
 const AUTO_PHASES: Phase[] = ["lighting", "crowd", "swarm", "tilt", "envelope", "seal"];
 
+const INTRO_PHASES: Phase[] = ["lighting", "crowd", "swarm", "tilt"];
+
 export interface SceneControllerOptions {
   reducedMotion: boolean;
   onPhase: (phase: Phase) => void;
@@ -92,12 +94,28 @@ export class SceneController {
   /** Begin the auto sequence from the start (called once assets are preloaded). */
   play() {
     this.opened = false;
+    this.holding = false;
     this.openCall?.kill();
     this.tl.play(0);
   }
 
+  private holding = false;
+
+  hold() {
+    if (!INTRO_PHASES.includes(this._phase) || this.holding) return;
+    this.holding = true;
+    this.tl.pause();
+  }
+
+  resume() {
+    if (!this.holding) return;
+    this.holding = false;
+    if (INTRO_PHASES.includes(this._phase)) this.tl.resume();
+  }
+
   /** Jump straight to the envelope + seal, skipping the sky build-up. */
   skip() {
+    this.holding = false;
     this.tl.pause();
     const sealTime = this.schedule.seal ?? 0;
     this.tl.time(sealTime);
