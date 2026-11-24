@@ -19,7 +19,9 @@ interface Props {
 export default function SceneStage({ guest, event }: Props) {
   const reducedMotion = usePrefersReducedMotion();
   const [phase, setPhase] = useState<Phase>("loading");
-  const [ready, setReady] = useState(false);
+  const [assetsReady, setAssetsReady] = useState(false);
+  const [introSettled, setIntroSettled] = useState(false);
+  const ready = assetsReady && (introSettled || reducedMotion);
 
   const controllerRef = useRef<SceneController | null>(null);
   if (!controllerRef.current) {
@@ -30,15 +32,17 @@ export default function SceneStage({ guest, event }: Props) {
   useEffect(() => () => controller.destroy(), [controller]);
 
   const handleReady = useCallback(() => {
-    setReady(true);
+    setAssetsReady(true);
     controller.play();
   }, [controller]);
+
+  const handleIntroSettled = useCallback(() => setIntroSettled(true), []);
 
   return (
     <ControllerContext.Provider value={controller}>
       <PhaseContext.Provider value={phase}>
         <main className="stage" data-phase={phase} aria-label={`Invitation to ${event.name}`}>
-          <VideoBackground />
+          <VideoBackground onIntroSettled={handleIntroSettled} />
 
           <div className="night-atmosphere" aria-hidden="true">
             <span className="night-atmosphere__moon" />

@@ -28,16 +28,6 @@ export default function Preloader({ onReady }: Props) {
       img.onerror = () => resolve();
       img.src = logoWebp;
     });
-    // Prime the intro video's first frames so playback begins as soon as the scene reveals.
-    const vid = document.createElement("video");
-    const introReady = new Promise<void>((resolve) => {
-      vid.preload = "auto";
-      vid.muted = true;
-      vid.onloadeddata = () => resolve();
-      vid.onerror = () => resolve();
-      vid.src = `${import.meta.env.BASE_URL}lantern-intro.mp4`;
-      vid.load();
-    });
 
     // Keep the centred event mark on screen long enough to register, even when cached
     // assets resolve almost instantly. The upper bound protects slow connections.
@@ -48,7 +38,7 @@ export default function Preloader({ onReady }: Props) {
       maximumTimer = window.setTimeout(resolve, 2500);
     });
 
-    Promise.race([Promise.all([fontsReady, logoReady, introReady, minimumSplash]), timeout]).then(finish);
+    Promise.race([Promise.all([fontsReady, logoReady, minimumSplash]), timeout]).then(finish);
 
     return () => {
       active = false;
