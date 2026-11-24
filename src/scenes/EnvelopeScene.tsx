@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import gsap from "gsap";
 import type { Guest, EventConfig } from "../config/types";
 import { useScenePhase, useController, atOrAfter } from "./sceneContext";
@@ -11,8 +11,8 @@ interface Props {
   event: EventConfig;
 }
 
-/** How many lanterns float up out of the envelope mouth as it opens. */
-const BURST_COUNT = 6;
+/** A restrained scatter of moonlit dust released as the envelope opens. */
+const SPARK_COUNT = 7;
 
 /**
  * Scene 4–6 (Agent "Envelope"). The envelope rises into the starry sky ("envelope"),
@@ -38,113 +38,199 @@ export default function EnvelopeScene({ guest, event }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const burstRef = useRef<HTMLDivElement>(null);
-  /** true once the envelope is at its resting centre (via rise or a snap on Skip). */
-  const atRest = useRef(false);
-  /** true once the open sequence has played. */
-  const opened = useRef(false);
-
+  const letterWrapRef = useRef<HTMLDivElement>(null);
   const present = atOrAfter(phase, "envelope");
-  const opening = atOrAfter(phase, "opening");
-  const showSeal = phase === "seal" || phase === "opening";
-  const showLetter = opening;
+  const opening = phase === "opening";
+  const showLetter = atOrAfter(phase, "opening");
+  const showSeal = phase === "seal";
   const showBurst = opening && !controller.reducedMotion;
 
   useLayoutEffect(() => {
-    if (!atOrAfter(phase, "envelope")) {
-      // left the envelope sequence (Replay): arm a fresh run next time
-      atRest.current = false;
-      opened.current = false;
-      return;
-    }
-
     const env = envRef.current;
     const flap = flapRef.current;
     const card = cardRef.current;
     const glow = glowRef.current;
-    if (!env || !flap || !card || !glow) return;
-    const reduced = controller.reducedMotion;
-    gsap.killTweensOf([env, flap, card, glow]);
 
-    // --- rest state (rise into frame once, or snap on a Skip jump) -----------
-    if (phase === "envelope" && !atRest.current) {
-      atRest.current = true;
-      gsap.set(flap, { rotateX: 0, zIndex: 4 });
-      gsap.set(card, { yPercent: 0 });
-      if (reduced) {
-        gsap.fromTo(env, { yPercent: 16, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.7, ease: "power2.out" });
-        gsap.to(glow, { opacity: 1, duration: 0.7, ease: "power2.out" });
-      } else {
-        gsap.fromTo(env, { yPercent: 135, autoAlpha: 1 }, { yPercent: 0, duration: 1.5, ease: "back.out(1.04)" });
-        gsap.fromTo(glow, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 1.3, ease: "power2.out", delay: 0.4 });
-      }
-    } else if (atOrAfter(phase, "seal") && !atRest.current) {
-      atRest.current = true;
-      gsap.set(env, { yPercent: 0, autoAlpha: 1 });
-      gsap.set(flap, { rotateX: 0, zIndex: 4 });
-      gsap.set(card, { yPercent: 0 });
-      gsap.set(glow, { opacity: 1, scale: 1 });
+    if (!present) {
+      if (env) gsap.killTweensOf(env);
+      if (flap) gsap.killTweensOf(flap);
+      if (card) gsap.killTweensOf(card);
+      if (glow) gsap.killTweensOf(glow);
+      return;
     }
 
-    // --- the open sequence (once) -------------------------------------------
-    if (opening && !opened.current) {
-      opened.current = true;
-      gsap.set(env, { yPercent: 0, autoAlpha: 1 });
+    if (!env || !flap || !card || !glow) return;
+
+    const targets = [env, flap, card, glow];
+    const reduced = controller.reducedMotion;
+    gsap.killTweensOf(targets);
+
+    // Every phase derives its visual state from the controller, including direct Skip jumps.
+    if (phase === "envelope") {
+      gsap.set([env, flap, card], { clearProps: "transform" });
+      gsap.set(env, { autoAlpha: 1, yPercent: 0, y: 0, scale: 1, rotationZ: 0 });
+      gsap.set(flap, { rotateX: 0, zIndex: 4, autoAlpha: 1 });
+      gsap.set(card, { yPercent: 0, rotationX: 0, rotationZ: 0 });
+      gsap.set(glow, { opacity: 0.42, scale: 1 });
+
+      gsap.fromTo(
+        env,
+        { yPercent: reduced ? 7 : 34, scale: reduced ? 0.99 : 0.975, rotationZ: reduced ? 0 : -0.7, autoAlpha: 0 },
+        {
+          yPercent: 0,
+          scale: 1,
+          rotationZ: 0,
+          autoAlpha: 1,
+          duration: reduced ? 0.42 : 1.22,
+          ease: reduced ? "power2.out" : "power3.out",
+          force3D: true,
+        },
+      );
+    } else if (phase === "seal") {
+      gsap.set(env, { yPercent: 0, y: 0, scale: 1, rotationZ: 0, autoAlpha: 1 });
+      gsap.set(flap, { rotateX: 0, zIndex: 4, autoAlpha: 1 });
+      gsap.set(card, { yPercent: 0, rotationX: 0, rotationZ: 0 });
+      gsap.set(glow, { opacity: 0.42, scale: 1 });
+    }
+
+    // A very small suspended-paper drift; only transform properties are animated.
+    if ((phase === "envelope" || phase === "seal") && !reduced) {
+      gsap.to(env, {
+        y: -2.5,
+        rotationZ: 0.12,
+        duration: 3.8,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: phase === "envelope" ? 1.38 : 0.15,
+        force3D: true,
+      });
+    }
+
+    // The wax component calls controller.open only after its fragments have fallen.
+    if (opening) {
+      gsap.killTweensOf(targets);
+      gsap.set(env, { yPercent: 0, y: 0, rotationZ: 0, scale: 1, autoAlpha: 1 });
+      gsap.set(flap, { rotateX: 0, zIndex: 4, autoAlpha: 1 });
+      gsap.set(card, { yPercent: 0, rotationX: 2.2, rotationZ: -0.25 });
 
       if (reduced) {
-        // ~300ms crossfade: flap + seal fade (WaxSeal handles the seal), card shown, env goes
-        gsap.to(flap, { autoAlpha: 0, duration: 0.3, ease: "power1.out" });
-        gsap.to(env, { autoAlpha: 0, duration: 0.4, ease: "power1.out", delay: 0.3 });
-        return;
-      }
+        gsap.to(flap, { autoAlpha: 0, duration: 0.12, ease: "none" });
+        gsap.to(card, { yPercent: -118, duration: 0.32, ease: "power2.out" });
+        gsap.to(env, { autoAlpha: 0, duration: 0.34, ease: "power1.out", delay: 0.14 });
+        gsap.to(glow, { opacity: 0, duration: 0.22, delay: 0.12 });
+      } else {
+        const timeline = gsap.timeline({ defaults: { overwrite: "auto" } });
 
-      const tl = gsap.timeline();
-      // 2 — let the seal fracture and shed its wax first; then the flap unsticks and
-      //     hinges open on its top edge, revealing the dark inner lining.
-      tl.to(flap, { rotateX: 7, duration: 0.18, ease: "power1.out" }, 0.62);
-      tl.to(flap, { rotateX: -180, duration: 0.8, ease: "power3.inOut" }, 0.8);
-      tl.set(flap, { zIndex: 1 }, 1.24);
-      // 3 — warm lantern light blooms from the opening as it parts
-      tl.to(glow, { opacity: 1, scale: 1.14, duration: 0.5, ease: "power2.out" }, 0.92);
-      // 4 — the card rises up out of the opaque pocket with a soft settle
-      tl.fromTo(card, { yPercent: 0 }, { yPercent: -124, duration: 0.92, ease: "power2.out" }, 1.32);
-      // 5 — handoff: the envelope sinks + fades as the readable letter grows in above it
-      tl.to(env, { yPercent: 48, autoAlpha: 0, duration: 0.86, ease: "power2.in" }, 2.08);
-      tl.to(glow, { opacity: 0, scale: 1, duration: 0.86, ease: "power1.in" }, 2.08);
+        // A soft recoil travels through the envelope before the paper releases.
+        timeline.to(env, { rotationZ: -0.38, y: 1.5, scale: 0.997, duration: 0.1, ease: "power1.out" }, 0);
+        timeline.to(env, { rotationZ: 0, y: 0, scale: 1, duration: 0.24, ease: "power2.out" }, 0.1);
+
+        // The flap flexes at the crease, then swings behind the pocket with a tiny settle.
+        timeline.to(flap, { rotateX: 4, duration: 0.1, ease: "power1.out" }, 0.02);
+        timeline.to(flap, { rotateX: -9, duration: 0.15, ease: "power1.inOut" }, 0.12);
+        timeline.to(flap, { rotateX: -164, duration: 0.74, ease: "power2.inOut" }, 0.27);
+        timeline.to(flap, { rotateX: -182, duration: 0.14, ease: "power1.out" }, 1.01);
+        timeline.to(flap, { rotateX: -180, duration: 0.16, ease: "power1.inOut" }, 1.15);
+        timeline.set(flap, { zIndex: 1 }, 1.2);
+
+        // A restrained pool of reflected moonlight follows the moving flap.
+        timeline.to(glow, { opacity: 0.68, duration: 0.42, ease: "power2.out" }, 0.34);
+
+        // Paper slides out with a slight initial tilt, then settles flat above the pocket.
+        timeline.to(
+          card,
+          { yPercent: -126, rotationX: 0, rotationZ: 0, duration: 1.02, ease: "power3.out", force3D: true },
+          0.72,
+        );
+        timeline.to(card, { yPercent: -123, duration: 0.16, ease: "power1.inOut" }, 1.74);
+
+        // The envelope leaves only after the card has cleared the mouth.
+        timeline.to(env, { yPercent: 32, autoAlpha: 0, duration: 0.76, ease: "power2.in" }, 2.02);
+        timeline.to(glow, { opacity: 0, duration: 0.62, ease: "power1.in" }, 2.08);
+      }
     } else if (phase === "opened") {
-      // guaranteed settled state (also covers a jump straight to opened)
-      opened.current = true;
       gsap.set(env, { autoAlpha: 0 });
       gsap.set(glow, { opacity: 0 });
     }
-  }, [phase, opening, controller]);
 
-  // --- lantern burst out of the envelope mouth (one-shot, on open) ----------
+    return () => {
+      gsap.killTweensOf(targets);
+    };
+  }, [phase, present, opening, controller.reducedMotion]);
+
+  // Reveal the complete letter + countdown together, only after the paper clears the envelope.
+  useLayoutEffect(() => {
+    const wrap = letterWrapRef.current;
+    if (!wrap) return;
+    gsap.killTweensOf(wrap);
+
+    if (phase === "opening") {
+      if (controller.reducedMotion) {
+        gsap.fromTo(wrap, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.18, ease: "none" });
+      } else {
+        gsap.fromTo(
+          wrap,
+          { autoAlpha: 0, y: 9 },
+          { autoAlpha: 1, y: 0, duration: 0.48, delay: 2.02, ease: "power2.out", force3D: true },
+        );
+      }
+    } else if (phase === "opened") {
+      gsap.set(wrap, { autoAlpha: 1, y: 0 });
+    }
+
+    return () => gsap.killTweensOf(wrap);
+  }, [phase, controller.reducedMotion]);
+
+  // Moonlit dust floats out of the envelope opening in a short, one-shot drift.
   useLayoutEffect(() => {
     const root = burstRef.current;
     if (!root || !showBurst) return;
-    const items = Array.from(root.querySelectorAll<HTMLElement>(".lantern-burst__rise"));
-    const sways = Array.from(root.querySelectorAll<HTMLElement>(".lantern-burst__sway"));
-    const tweens: gsap.core.Tween[] = [];
 
-    items.forEach((rise, i) => {
-      const spread = (i / (BURST_COUNT - 1) - 0.5) * 140;
-      const drift = spread * 1.4 + (Math.random() * 40 - 20);
-      const climb = -(window.innerHeight * 0.62 + Math.random() * 120);
-      const dur = 3.4 + Math.random() * 1.6;
-      const delay = 1.1 + i * 0.13;
+    const particles = Array.from(root.querySelectorAll<HTMLElement>(".stardust-burst__particle"));
+    const tweens: gsap.core.Tween[] = [];
+    particles.forEach((particle) => {
+      particle.style.willChange = "transform, opacity";
+    });
+
+    particles.forEach((particle, index) => {
+      const direction = index % 2 === 0 ? -1 : 1;
+      const spread = (index - (SPARK_COUNT - 1) / 2) * 17;
+      const drift = direction * (10 + index * 2);
+      const duration = 1.8 + (index % 3) * 0.28;
+      const delay = 0.24 + index * 0.075;
 
       tweens.push(
         gsap.fromTo(
-          rise,
-          { x: spread * 0.3, y: 30, scale: 0.25, opacity: 0 },
-          { y: climb, x: spread + drift, scale: 0.9 + Math.random() * 0.25, opacity: 1, duration: dur, ease: "power1.out", delay },
+          particle,
+          { x: spread * 0.35, y: 8, scale: 0.25, opacity: 0 },
+          {
+            x: spread + drift,
+            y: -(105 + (index % 4) * 23),
+            scale: 0.72 + (index % 3) * 0.14,
+            opacity: 0.9,
+            duration,
+            delay,
+            ease: "power2.out",
+          },
         ),
       );
-      tweens.push(gsap.to(rise, { opacity: 0, duration: 1.2, ease: "power1.in", delay: delay + dur - 1.2 }));
-      tweens.push(gsap.to(sways[i], { x: i % 2 ? 18 : -18, duration: 1.3 + Math.random() * 0.6, yoyo: true, repeat: -1, ease: "sine.inOut", delay }));
+      tweens.push(
+        gsap.to(particle, {
+          opacity: 0,
+          duration: 0.62,
+          delay: delay + duration - 0.48,
+          ease: "power1.in",
+        }),
+      );
     });
 
-    return () => tweens.forEach((t) => t.kill());
+    return () => {
+      tweens.forEach((tween) => tween.kill());
+      particles.forEach((particle) => {
+        particle.style.willChange = "auto";
+      });
+    };
   }, [showBurst]);
 
   if (!present) {
@@ -156,147 +242,149 @@ export default function EnvelopeScene({ guest, event }: Props) {
       <div className="envelope-stage">
         <div ref={glowRef} className="envelope__glow" aria-hidden="true" />
 
-        {/* the envelope unit */}
-        <div ref={envRef} className="env" aria-hidden="true">
-          {/* back panel (opaque) */}
-          <svg className="env__part env__back" viewBox="0 0 350 250" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="env-body" x1="0.1" y1="0" x2="0.55" y2="1">
-                <stop offset="0" stopColor="#fff8e9" />
-                <stop offset="0.46" stopColor="#ead6b2" />
-                <stop offset="1" stopColor="#c39b62" />
-              </linearGradient>
-              {/* a metallic gold-foil sweep reused for every gold edge */}
-              <linearGradient id="env-foil-a" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stopColor="#8c5a2f" />
-                <stop offset="0.36" stopColor="#d5a84f" />
-                <stop offset="0.52" stopColor="#fff0ad" />
-                <stop offset="0.7" stopColor="#d5a84f" />
-                <stop offset="1" stopColor="#8c5a2f" />
-              </linearGradient>
-            </defs>
-            <rect x="2" y="2" width="346" height="246" rx="16" fill="url(#env-body)" stroke="url(#env-foil-a)" strokeWidth="2.5" />
-            <rect x="6.5" y="6.5" width="337" height="237" rx="12" fill="none" stroke="#fff1c8" strokeOpacity="0.62" strokeWidth="1" />
-            <rect x="13" y="13" width="324" height="224" rx="9" fill="none" stroke="#8c5a2f" strokeOpacity="0.28" strokeWidth="0.8" />
-            <path d="M26 24 H74 M276 24 H324 M26 226 H74 M276 226 H324" stroke="#8c5a2f" strokeOpacity="0.58" strokeWidth="1" />
-            <path d="M175 17 l4 5 -4 5 -4 -5z M175 223 l4 5 -4 5 -4 -5z" fill="#8c5a2f" opacity="0.82" />
-          </svg>
-
-          {/* the sliding card, clipped to the envelope interior (open at the top) */}
-          <div className="env__clip">
-            <div ref={cardRef} className="env__card" />
-          </div>
-
-          {/* front pocket (opaque) — hides the resting card; gold seams for the look */}
-          <svg className="env__part env__pocket" viewBox="0 0 350 250" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="env-pocket" x1="0.1" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#8d5b48" />
-                <stop offset="0.52" stopColor="#633b3c" />
-                <stop offset="1" stopColor="#3c2631" />
-              </linearGradient>
-              <linearGradient id="env-foil-b" x1="0" y1="0" x2="1" y2="0.5">
-                <stop offset="0" stopColor="#8c5a2f" />
-                <stop offset="0.4" stopColor="#d5a84f" />
-                <stop offset="0.55" stopColor="#fff0ad" />
-                <stop offset="0.72" stopColor="#d5a84f" />
-                <stop offset="1" stopColor="#8c5a2f" />
-              </linearGradient>
-              <radialGradient id="env-pocket-sheen" cx="0.5" cy="1.05" r="0.75">
-                <stop offset="0" stopColor="#ffffff" stopOpacity="0.1" />
-                <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-            {/* The front pocket fills everything BELOW the flap's diagonals (up to the centre
-                apex), so the flap and pocket meet flush — no slice of the darker back panel
-                shows through on the sides. */}
-            <path d="M0 0 L175 133 L350 0 L350 249 L0 249 Z" fill="url(#env-pocket)" />
-            <path d="M0 0 L175 133 L350 0 L350 249 L0 249 Z" fill="url(#env-pocket-sheen)" />
-            {/* a restrained art-deco flourish pressed into the lower pocket */}
-            <g fill="none" stroke="#d9c7f7" strokeOpacity="0.25" strokeWidth="1">
-              <path d="M28 178 L64 202 M322 178 L286 202" />
-              <path d="M132 218 Q175 189 218 218 M143 228 Q175 207 207 228" />
-              <path d="M175 202 l7 7 -7 7 -7 -7z" />
-            </g>
-            {/* faint lantern-light star-dust on the paper */}
-            <g fill="#f7d98a" opacity="0.28">
-              <circle cx="46" cy="196" r="1.1" />
-              <circle cx="104" cy="228" r="1.4" />
-              <circle cx="250" cy="208" r="1.2" />
-              <circle cx="306" cy="184" r="1.3" />
-              <circle cx="188" cy="234" r="1" />
-              <circle cx="286" cy="236" r="1.1" />
-            </g>
-            {/* the lower fold V — a soft shadow then a crisp gold seam, meeting the flap at the centre */}
-            <path d="M2 248 L175 134 L348 248" fill="none" stroke="#120a22" strokeOpacity="0.32" strokeWidth="3.5" strokeLinejoin="round" />
-            <path d="M2 248 L175 133 L348 248" fill="none" stroke="url(#env-foil-b)" strokeWidth="2" strokeLinejoin="round" />
-          </svg>
-
-          <div className="env__address" aria-hidden="true">
-            <span className="env__address-kicker">With warm regards</span>
-            <span className="env__address-rule" />
-            <span className="env__address-copy">An evening beneath<br />one beautiful sky</span>
-          </div>
-          <div className="env__stamp" aria-hidden="true">
-            <span className="env__stamp-ring" />
-            <span className="env__stamp-star">✦</span>
-            <span className="env__stamp-label">Keepsake<br />No. 01</span>
-          </div>
-
-          {/* the flap: top-edge hinge with a real back face */}
-          <div ref={flapRef} className="env__flap">
-            <svg className="env__flap-face env__flap-face--front" viewBox="0 0 350 135" preserveAspectRatio="none">
+        {/* The fixed anchor owns centering; GSAP only transforms the envelope inside it. */}
+        <div className="envelope-unit-anchor">
+          <div ref={envRef} className="env">
+            {/* back panel (opaque) */}
+            <svg className="env__part env__back" aria-hidden="true" viewBox="0 0 350 250" preserveAspectRatio="none">
               <defs>
-                <linearGradient id="env-flap" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#9b684d" />
-                  <stop offset="0.55" stopColor="#6b4040" />
-                  <stop offset="1" stopColor="#402832" />
+                <linearGradient id="env-body" x1="0.1" y1="0" x2="0.55" y2="1">
+                  <stop offset="0" stopColor="#332d5b" />
+                  <stop offset="0.46" stopColor="#211d43" />
+                  <stop offset="1" stopColor="#11152f" />
                 </linearGradient>
-                <linearGradient id="env-foil-c" x1="0" y1="0" x2="1" y2="0.4">
-                  <stop offset="0" stopColor="#8c5a2f" />
-                  <stop offset="0.4" stopColor="#d5a84f" />
-                  <stop offset="0.55" stopColor="#fff0ad" />
-                  <stop offset="0.72" stopColor="#d5a84f" />
-                  <stop offset="1" stopColor="#8c5a2f" />
+                {/* a metallic gold-foil sweep reused for every gold edge */}
+                <linearGradient id="env-foil-a" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="#8172ad" />
+                  <stop offset="0.36" stopColor="#d8c9f6" />
+                  <stop offset="0.52" stopColor="#f5f0ff" />
+                  <stop offset="0.7" stopColor="#bca9e6" />
+                  <stop offset="1" stopColor="#7969a6" />
                 </linearGradient>
               </defs>
-              <path d="M1 1 L349 1 L175 133 Z" fill="url(#env-flap)" stroke="url(#env-foil-c)" strokeWidth="2.5" strokeLinejoin="round" />
-              {/* inset gold liner + a hairline highlight along the hinge */}
-              <path d="M15 7 L335 7 L175 120 Z" fill="none" stroke="#fff0b0" strokeOpacity="0.62" strokeWidth="1" strokeLinejoin="round" />
-              <path d="M2 2.5 L348 2.5" stroke="#ffffff" strokeOpacity="0.2" strokeWidth="1.5" />
-              <path d="M175 19 l8 8 -8 8 -8 -8z" fill="none" stroke="#fff0b0" strokeOpacity="0.78" strokeWidth="1" />
-              <circle cx="175" cy="27" r="2" fill="#fff5c9" fillOpacity="0.9" />
+              <rect x="2" y="2" width="346" height="246" rx="16" fill="url(#env-body)" stroke="url(#env-foil-a)" strokeWidth="2.5" />
+              <rect x="6.5" y="6.5" width="337" height="237" rx="12" fill="none" stroke="#ddd3f5" strokeOpacity="0.24" strokeWidth="1" />
+              <rect x="13" y="13" width="324" height="224" rx="9" fill="none" stroke="#ddd3f5" strokeOpacity="0.11" strokeWidth="0.8" />
+              <path d="M26 24 H74 M276 24 H324 M26 226 H74 M276 226 H324" stroke="#ddd3f5" strokeOpacity="0.42" strokeWidth="1" />
+              <path d="M175 17 l4 5 -4 5 -4 -5z M175 223 l4 5 -4 5 -4 -5z" fill="#d9c7f7" opacity="0.72" />
             </svg>
-            <svg className="env__flap-face env__flap-face--back" viewBox="0 0 350 135" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="env-flap-back" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#3e2834" />
-                  <stop offset="1" stopColor="#211824" />
-                </linearGradient>
-              </defs>
-              <path d="M1 1 L349 1 L175 133 Z" fill="url(#env-flap-back)" stroke="#f0c66b" strokeOpacity="0.56" strokeWidth="1.5" strokeLinejoin="round" />
-              <path d="M16 8 L334 8 L175 116 Z" fill="none" stroke="#f0c66b" strokeOpacity="0.42" strokeWidth="1" strokeLinejoin="round" />
-            </svg>
-          </div>
 
-          {showSeal && <WaxSeal onTap={() => controller.open()} />}
+            {/* the sliding card, clipped to the envelope interior (open at the top) */}
+            <div className="env__clip">
+              <div ref={cardRef} className="env__card" />
+            </div>
+
+            {/* front pocket (opaque) — hides the resting card; gold seams for the look */}
+            <svg className="env__part env__pocket" aria-hidden="true" viewBox="0 0 350 250" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="env-pocket" x1="0.1" y1="0" x2="0" y2="1">
+                  <stop offset="0" stopColor="#3b356a" />
+                  <stop offset="0.52" stopColor="#292650" />
+                  <stop offset="1" stopColor="#151a36" />
+                </linearGradient>
+                <linearGradient id="env-foil-b" x1="0" y1="0" x2="1" y2="0.5">
+                  <stop offset="0" stopColor="#7969a6" />
+                  <stop offset="0.4" stopColor="#d8c9f6" />
+                  <stop offset="0.55" stopColor="#f5f0ff" />
+                  <stop offset="0.72" stopColor="#bca9e6" />
+                  <stop offset="1" stopColor="#8172ad" />
+                </linearGradient>
+                <radialGradient id="env-pocket-sheen" cx="0.5" cy="1.05" r="0.75">
+                  <stop offset="0" stopColor="#ffffff" stopOpacity="0.1" />
+                  <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+              {/* The front pocket fills everything BELOW the flap's diagonals (up to the centre
+                  apex), so the flap and pocket meet flush — no slice of the darker back panel
+                  shows through on the sides. */}
+              <path d="M0 0 L175 133 L350 0 L350 249 L0 249 Z" fill="url(#env-pocket)" />
+              <path d="M0 0 L175 133 L350 0 L350 249 L0 249 Z" fill="url(#env-pocket-sheen)" />
+              {/* a restrained art-deco flourish pressed into the lower pocket */}
+              <g fill="none" stroke="#d9c7f7" strokeOpacity="0.25" strokeWidth="1">
+                <path d="M28 178 L64 202 M322 178 L286 202" />
+                <path d="M132 218 Q175 189 218 218 M143 228 Q175 207 207 228" />
+                <path d="M175 202 l7 7 -7 7 -7 -7z" />
+              </g>
+              {/* faint lantern-light star-dust on the paper */}
+              <g fill="#d9c7f7" opacity="0.16">
+                <circle cx="46" cy="196" r="1.1" />
+                <circle cx="104" cy="228" r="1.4" />
+                <circle cx="250" cy="208" r="1.2" />
+                <circle cx="306" cy="184" r="1.3" />
+                <circle cx="188" cy="234" r="1" />
+                <circle cx="286" cy="236" r="1.1" />
+              </g>
+              {/* the lower fold V — a soft shadow then a crisp gold seam, meeting the flap at the centre */}
+              <path d="M2 248 L175 134 L348 248" fill="none" stroke="#120a22" strokeOpacity="0.32" strokeWidth="3.5" strokeLinejoin="round" />
+              <path d="M2 248 L175 133 L348 248" fill="none" stroke="url(#env-foil-b)" strokeWidth="2" strokeLinejoin="round" />
+            </svg>
+
+            {/* the flap: top-edge hinge with a real back face */}
+            <div ref={flapRef} className="env__flap">
+              <svg className="env__flap-face env__flap-face--front" aria-hidden="true" viewBox="0 0 350 135" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="env-flap" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor="#494274" />
+                    <stop offset="0.55" stopColor="#332e5d" />
+                    <stop offset="1" stopColor="#1b1b3d" />
+                  </linearGradient>
+                  <linearGradient id="env-foil-c" x1="0" y1="0" x2="1" y2="0.4">
+                    <stop offset="0" stopColor="#7969a6" />
+                    <stop offset="0.4" stopColor="#d8c9f6" />
+                    <stop offset="0.55" stopColor="#f5f0ff" />
+                    <stop offset="0.72" stopColor="#bca9e6" />
+                    <stop offset="1" stopColor="#8172ad" />
+                  </linearGradient>
+                </defs>
+                <path d="M1 1 L349 1 L175 133 Z" fill="url(#env-flap)" stroke="url(#env-foil-c)" strokeWidth="2.5" strokeLinejoin="round" />
+                {/* inset gold liner + a hairline highlight along the hinge */}
+                <path d="M15 7 L335 7 L175 120 Z" fill="none" stroke="#d9c7f7" strokeOpacity="0.38" strokeWidth="1" strokeLinejoin="round" />
+                <path d="M2 2.5 L348 2.5" stroke="#ffffff" strokeOpacity="0.2" strokeWidth="1.5" />
+                <path d="M175 19 l8 8 -8 8 -8 -8z" fill="none" stroke="#d8c9f6" strokeOpacity="0.55" strokeWidth="1" />
+                <circle cx="175" cy="27" r="2" fill="#f6f0ff" fillOpacity="0.72" />
+              </svg>
+              <svg className="env__flap-face env__flap-face--back" aria-hidden="true" viewBox="0 0 350 135" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="env-flap-back" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor="#17152f" />
+                    <stop offset="1" stopColor="#101329" />
+                  </linearGradient>
+                </defs>
+                <path d="M1 1 L349 1 L175 133 Z" fill="url(#env-flap-back)" stroke="#d9c7f7" strokeOpacity="0.3" strokeWidth="1.5" strokeLinejoin="round" />
+                <path d="M16 8 L334 8 L175 116 Z" fill="none" stroke="#d9c7f7" strokeOpacity="0.32" strokeWidth="1" strokeLinejoin="round" />
+              </svg>
+            </div>
+
+            {showSeal && <WaxSeal onTap={() => controller.open()} />}
+          </div>
         </div>
 
         {/* the readable letter — sits above everything once handed off */}
         {showLetter && (
-          <div className="letter-wrap">
-            <InvitationLetter guest={guest} event={event} />
+          <div ref={letterWrapRef} className="letter-wrap">
+            <div className="letter-stack">
+              <InvitationLetter guest={guest} event={event} />
+              <div className="letter-aside">
+                <EventCountdown event={event} />
+                {phase === "opened" && (
+                  <button
+                    type="button"
+                    className="controls__btn letter-replay"
+                    onClick={() => controller.replay()}
+                  >
+                    Replay invitation
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         )}
-
-        {/* sky lanterns drifting up out of the open envelope */}
+        {/* fine celestial dust drifting out as the letter is released */}
         {showBurst && (
-          <div ref={burstRef} className="lantern-burst" aria-hidden="true">
-            {Array.from({ length: BURST_COUNT }).map((_, i) => (
-              <span key={i} className="lantern-burst__rise">
-                <span className="lantern-burst__sway">
-                  <BurstLantern />
-                </span>
+          <div ref={burstRef} className="stardust-burst" aria-hidden="true">
+            {Array.from({ length: SPARK_COUNT }).map((_, i) => (
+              <span key={i} className="stardust-burst__particle">
+                <BurstSpark />
               </span>
             ))}
           </div>
@@ -306,16 +394,198 @@ export default function EnvelopeScene({ guest, event }: Props) {
   );
 }
 
-/** A tiny original sky-lantern sprite for the one-shot burst (colours from design tokens). */
-function BurstLantern() {
+/** A small, low-contrast star glint for the envelope's dust burst. */
+function BurstSpark() {
   return (
-    <svg className="lantern-burst__svg" viewBox="0 0 40 56" aria-hidden="true">
-      <circle cx="20" cy="27" r="17" fill="rgb(217 199 247 / 0.13)" />
-      <path d="M20 4 L23.5 21.5 L36 27 L23.5 32.5 L20 50 L16.5 32.5 L4 27 L16.5 21.5 Z" fill="#eee8ff" />
-      <path d="M20 15 L22 25 L29 27 L22 29 L20 39 L18 29 L11 27 L18 25 Z" fill="#ffffff" opacity="0.8" />
-      <circle cx="33" cy="10" r="1.7" fill="#d9c7f7" />
-      <circle cx="8" cy="43" r="1.4" fill="#ffffff" opacity="0.8" />
+    <svg className="stardust-burst__svg" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M10 1.5 12.1 7.9 18.5 10 12.1 12.1 10 18.5 7.9 12.1 1.5 10 7.9 7.9Z" fill="#eee8ff" />
+      <circle cx="10" cy="10" r="2" fill="#fff" />
     </svg>
+  );
+}
+
+type EventDateFields = Record<string, unknown>;
+
+function parseClock(value: unknown): [number, number, number] | null {
+  if (typeof value !== "string") return null;
+  const match = value.trim().match(/^(\d{1,2})(?:[:.](\d{2}))?(?:[:.](\d{2}))?\s*(AM|PM)?$/i);
+  if (!match) return null;
+
+  let hours = Number(match[1]);
+  const minutes = Number(match[2] ?? 0);
+  const seconds = Number(match[3] ?? 0);
+  const meridiem = match[4]?.toUpperCase();
+
+  if (minutes > 59 || seconds > 59 || hours > 23) return null;
+  if (meridiem) {
+    if (hours < 1 || hours > 12) return null;
+    hours = (hours % 12) + (meridiem === "PM" ? 12 : 0);
+  }
+  return [hours, minutes, seconds];
+}
+
+function makeLocalTimestamp(
+  year: number,
+  monthIndex: number,
+  day: number,
+  clockValue?: unknown,
+): number | null {
+  const clock = clockValue == null || clockValue === "" ? [0, 0, 0] as const : parseClock(clockValue);
+  if (!clock) return null;
+
+  const [hours, minutes, seconds] = clock;
+  const date = new Date(year, monthIndex, day, hours, minutes, seconds);
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== monthIndex ||
+    date.getDate() !== day
+  ) return null;
+
+  const timestamp = date.getTime();
+  return Number.isFinite(timestamp) ? timestamp : null;
+}
+
+function parseEventDate(value: unknown, timeValue?: unknown): number | null {
+  if (value instanceof Date) {
+    const timestamp = value.getTime();
+    return Number.isFinite(timestamp) ? timestamp : null;
+  }
+  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+  if (typeof value !== "string" || !value.trim()) return null;
+
+  const raw = value.trim();
+  const dateOnly = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (dateOnly) {
+    return makeLocalTimestamp(
+      Number(dateOnly[1]),
+      Number(dateOnly[2]) - 1,
+      Number(dateOnly[3]),
+      timeValue,
+    );
+  }
+
+  // A timezone-free ISO date/time is local time; explicit Z/offset values stay absolute.
+  const localIso = raw.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  if (localIso) {
+    return makeLocalTimestamp(
+      Number(localIso[1]),
+      Number(localIso[2]) - 1,
+      Number(localIso[3]),
+      `${localIso[4]}:${localIso[5]}:${localIso[6] ?? "00"}`,
+    );
+  }
+
+  // Parse common human-readable dates before Date.parse so a separate `time` field is kept.
+  const dayFirst = raw.match(/^(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\s+(\d{4})(?:[,|·–— ]+(.+))?$/i);
+  const monthFirst = raw.match(/^([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})(?:[,|·–— ]+(.+))?$/i);
+  const human = dayFirst ?? monthFirst;
+  if (human) {
+    const monthNames = [
+      "january", "february", "march", "april", "may", "june",
+      "july", "august", "september", "october", "november", "december",
+    ];
+    const monthName = (dayFirst ? human[2] : human[1]).toLowerCase();
+    const monthIndex = monthNames.findIndex((month) => month.startsWith(monthName.slice(0, 3)));
+    if (monthIndex < 0) return null;
+
+    const day = Number(dayFirst ? human[1] : human[2]);
+    const year = Number(human[3]);
+    const inlineTime = human[4]?.replace(/^[,|·–— ]+/, "").replace(/^at\s+/i, "");
+    const clockValue = inlineTime ?? timeValue;
+    if (clockValue == null || clockValue === "" || parseClock(clockValue)) {
+      return makeLocalTimestamp(year, monthIndex, day, clockValue);
+    }
+  }
+
+  const parsed = Date.parse(raw);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+/**
+ * Supports common EventConfig date names without requiring a change to the config type:
+ * startsAt, startAt, startDateTime, eventDateTime, dateTime, datetime,
+ * eventDate, startDate, or date (optionally paired with time/startTime).
+ */
+function getEventTimestamp(event: EventConfig): number | null {
+  const fields = event as unknown as EventDateFields;
+  const separateTime = fields.startTime ?? fields.time;
+  const dateKeys = [
+    "countdownAt",
+    "startsAt",
+    "startAt",
+    "startDateTime",
+    "eventDateTime",
+    "dateTime",
+    "datetime",
+    "eventDate",
+    "startDate",
+    "date",
+  ];
+
+  for (const key of dateKeys) {
+    const value = fields[key];
+    if (value === undefined || value === null || value === "") continue;
+    const timestamp = parseEventDate(value, separateTime);
+    if (timestamp !== null) return timestamp;
+  }
+  return null;
+}
+
+function EventCountdown({ event }: { event: EventConfig }) {
+  const target = getEventTimestamp(event);
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (target === null) return;
+    const update = () => setNow(Date.now());
+    update();
+    const interval = window.setInterval(update, 1000);
+    document.addEventListener("visibilitychange", update);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", update);
+    };
+  }, [target]);
+
+  if (target === null) {
+    return (
+      <section className="event-countdown event-countdown--unavailable" aria-label="Event countdown">
+        <p className="event-countdown__eyebrow">A little more until we meet</p>
+        <p className="event-countdown__unavailable-text">
+          The countdown will begin when the event date is confirmed.
+        </p>
+      </section>
+    );
+  }
+
+  const remaining = Math.max(0, target - now);
+  const days = Math.floor(remaining / 86_400_000);
+  const hours = Math.floor((remaining % 86_400_000) / 3_600_000);
+  const minutes = Math.floor((remaining % 3_600_000) / 60_000);
+  const seconds = Math.floor((remaining % 60_000) / 1_000);
+  const parts = [
+    { value: days, label: "Days" },
+    { value: hours, label: "Hours" },
+    { value: minutes, label: "Minutes" },
+    { value: seconds, label: "Seconds" },
+  ];
+
+  return (
+    <section className="event-countdown" aria-label="Countdown to the event">
+      <p className="event-countdown__eyebrow">A little more until we meet</p>
+      {remaining === 0 ? (
+        <p className="event-countdown__arrived">The moment has arrived ✦</p>
+      ) : (
+        <div className="event-countdown__grid" aria-live="off">
+          {parts.map((part) => (
+            <div className="event-countdown__unit" key={part.label}>
+              <span className="event-countdown__value">{String(part.value).padStart(2, "0")}</span>
+              <span className="event-countdown__label">{part.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }
 

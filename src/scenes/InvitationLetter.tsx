@@ -41,6 +41,7 @@ export default function InvitationLetter({ guest, event }: Props) {
             duration: 0.9,
             ease: "power3.out",
             delay: 1.98,
+            force3D: true,
           },
         );
       }

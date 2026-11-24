@@ -19,7 +19,7 @@
   height: 100%;
   /* 16:9 footage filling a portrait phone: cover + centre keeps the sky edge-to-edge. */
   object-fit: cover;
-  object-position: center;
+  object-position: 50% 50%;
   pointer-events: none;
   /* a touch of depth so the overlaid envelope + letter read clearly on top */
   will-change: opacity;
@@ -39,4 +39,14 @@
   background:
     radial-gradient(130% 100% at 50% 42%, transparent 52%, rgb(5 6 15 / 0.42) 100%),
     linear-gradient(180deg, rgb(5 6 15 / 0.28) 0%, transparent 26%, transparent 64%, rgb(5 6 15 / 0.46) 100%);
+}
+
+
+/* Keep the important action in frame on narrow portrait screens. */
+@media (max-width: 600px) and (orientation: portrait) {
+  .video-bg__layer { object-position: 50% 50%; }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .video-bg__layer { object-position: 50% 44%; }
 }

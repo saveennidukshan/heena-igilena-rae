@@ -14,8 +14,10 @@ export interface EventConfig {
   name: string;
   /** Optional Latin transliteration / theme label for meta + fallbacks. */
   themeLabel?: string;
-  /** Human-readable date & time string. */
+  /** Human-readable date & time shown on the invitation. */
   dateTime: string;
+  /** Optional exact event instant for the countdown (ISO 8601, including timezone offset). */
+  countdownAt?: string;
   /** Venue name / address. */
   venue: string;
   /** Short flourish lines shown on the letter. */

@@ -10,9 +10,14 @@ interface Props {
 export default function Preloader({ onReady }: Props) {
   useEffect(() => {
     let done = false;
+    let active = true;
+    let minimumTimer: number | undefined;
+    let maximumTimer: number | undefined;
+
     const finish = () => {
-      if (done) return;
+      if (done || !active) return;
       done = true;
+      if (maximumTimer !== undefined) window.clearTimeout(maximumTimer);
       onReady();
     };
 
@@ -23,8 +28,7 @@ export default function Preloader({ onReady }: Props) {
       img.onerror = () => resolve();
       img.src = logoWebp;
     });
-    // Prime the intro video's first frames so playback begins the instant the scene reveals
-    // (the browser caches it; the real <video> element then reuses the buffered data).
+    // Prime the intro video's first frames so playback begins as soon as the scene reveals.
     const vid = document.createElement("video");
     const introReady = new Promise<void>((resolve) => {
       vid.preload = "auto";
@@ -34,10 +38,23 @@ export default function Preloader({ onReady }: Props) {
       vid.src = `${import.meta.env.BASE_URL}lantern-intro.mp4`;
       vid.load();
     });
-    // Safety timeout so a slow network never traps the user on the splash.
-    const timeout = new Promise<void>((resolve) => setTimeout(resolve, 2500));
 
-    Promise.race([Promise.all([fontsReady, logoReady, introReady]), timeout]).then(finish);
+    // Keep the centred event mark on screen long enough to register, even when cached
+    // assets resolve almost instantly. The upper bound protects slow connections.
+    const minimumSplash = new Promise<void>((resolve) => {
+      minimumTimer = window.setTimeout(resolve, 1150);
+    });
+    const timeout = new Promise<void>((resolve) => {
+      maximumTimer = window.setTimeout(resolve, 2500);
+    });
+
+    Promise.race([Promise.all([fontsReady, logoReady, introReady, minimumSplash]), timeout]).then(finish);
+
+    return () => {
+      active = false;
+      if (minimumTimer !== undefined) window.clearTimeout(minimumTimer);
+      if (maximumTimer !== undefined) window.clearTimeout(maximumTimer);
+    };
   }, [onReady]);
 
   return (

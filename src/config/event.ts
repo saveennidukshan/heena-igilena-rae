@@ -8,8 +8,12 @@ import type { EventConfig } from "./types";
 export const event: EventConfig = {
   name: "හීන ඉගිලෙන රෑ",
   themeLabel: "Dreamy Night",
-  dateTime: "[DATE — e.g. 20 December 2025, 7:00 PM]",
-  venue: "[VENUE — e.g. Main Auditorium, Faculty of Computing, USJ]",
+  // Human-readable date printed on the invitation.
+  dateTime: "1 December 2026, 5:00 PM",
+  // Optional exact countdown instant. Use the real event time with its timezone offset,
+  // e.g. "2026-12-20T19:00:00+05:30" for a 7:00 PM Sri Lanka event.
+  countdownAt: "2026-12-01T17:00:00+05:30",
+  venue: "University Lower Ground",
   taglines: ["same sky, same dreams, one night"],
 };
 

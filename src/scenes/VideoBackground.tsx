@@ -172,25 +172,24 @@ export default function VideoBackground() {
     };
   }, []);
 
-  // --- gold masthead: materialise after the intro, then recede as the envelope rises ---
+  // --- gold masthead: materialise over the full sky, then recede as the envelope rises ---
   useEffect(() => {
     const m = document.querySelector<HTMLElement>(".masthead");
     if (!m) return;
     gsap.killTweensOf(m);
     gsap.set(m, { xPercent: -50, yPercent: -50 });
 
-    if (reduced) {
-      gsap.set(m, { autoAlpha: 0 });
-      return;
-    }
-    if (phase === "envelope") {
+    // The event mark gets a dedicated, genuinely centred beat before the envelope arrives.
+    // In reduced-motion mode the same title beat is static during the short lighting phase.
+    const showCentredMark = (reduced && phase === "lighting") || (!reduced && phase === "tilt");
+    if (showCentredMark) {
       gsap.fromTo(
         m,
-        { autoAlpha: 0, scale: 0.9 },
-        { autoAlpha: 1, scale: 1, duration: 1.3, ease: "power2.out" },
+        { autoAlpha: 0, scale: reduced ? 1 : 0.94 },
+        { autoAlpha: 1, scale: 1, duration: reduced ? 0.18 : 1.15, ease: "power2.out" },
       );
-    } else if (phase === "seal") {
-      gsap.to(m, { autoAlpha: 0, scale: 1.04, duration: 1.2, ease: "power2.in" });
+    } else if (phase === "envelope") {
+      gsap.to(m, { autoAlpha: 0, scale: 0.97, duration: reduced ? 0.22 : 0.9, ease: "power2.in" });
     } else {
       gsap.set(m, { autoAlpha: 0 });
     }

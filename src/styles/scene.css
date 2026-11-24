@@ -2,6 +2,11 @@
 .stage {
   position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100vh; /* fallback for older browsers */
+  height: 100svh;
+  height: 100dvh;
+  min-height: 0;
   overflow: hidden;
   display: block;
   isolation: isolate;
@@ -46,7 +51,6 @@
     radial-gradient(circle at 74% 70%, rgb(245 239 255 / 0.62) 0 0.9px, transparent 1.8px),
     radial-gradient(circle at 91% 83%, rgb(221 209 255 / 0.58) 0 0.8px, transparent 1.8px);
   opacity: 0.66;
-  animation: sky-drift 38s ease-in-out infinite alternate;
 }
 .night-atmosphere::after {
   content: "";
@@ -88,14 +92,14 @@
   height: 52%;
   border-radius: 50%;
   background: radial-gradient(ellipse at 50% 0%, rgb(124 109 186 / 0.2), transparent 65%);
-  filter: blur(28px);
+  filter: none;
 }
 @keyframes sky-drift {
   from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.46; }
   to { transform: translate3d(0, -8px, 0) scale(1.025); opacity: 0.78; }
 }
 
-/* Shared logo treatment. The intro masthead animation and its placement are unchanged. */
+/* The gold event mark is intentionally crisp: no bloom, drop-shadow, or shimmer overlay. */
 .brandlogo {
   position: relative;
   display: inline-block;
@@ -106,37 +110,28 @@
   width: 100%;
   height: auto;
   user-select: none;
+  -webkit-user-drag: none;
+  filter: none;
 }
-.brandlogo__shimmer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.55) 50%, transparent 65%);
-  background-size: 250% 100%;
-  mix-blend-mode: screen;
-  -webkit-mask-image: var(--logo-mask, none);
-  animation: logo-shimmer 3.6s ease-in-out infinite;
-}
-@keyframes logo-shimmer {
-  0% { background-position: 160% 0; }
-  55%, 100% { background-position: -60% 0; }
-}
-.brandlogo--seal .brandlogo__shimmer { display: none; }
 
 .masthead {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
   width: min(68vw, 440px);
-  z-index: 6;
+  height: min(42svh, 330px);
+  transform: translate(-50%, -50%);
+  z-index: 5;
   opacity: 0;
   pointer-events: none;
 }
 .masthead .brandlogo__img {
-  filter: drop-shadow(0 0 20px rgb(var(--rgb-gold) / 0.5)) drop-shadow(0 0 52px rgb(var(--rgb-ember) / 0.32));
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
-.masthead .brandlogo__shimmer { display: none; }
 
 /* Glassy controls, legible over moving footage and the night veil. */
 .controls {
@@ -147,6 +142,7 @@
   display: flex;
   gap: var(--space-2);
 }
+
 .controls__btn {
   appearance: none;
   display: inline-flex;
@@ -184,42 +180,38 @@
   place-items: center;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 42%, rgb(86 73 137 / 0.32), transparent 34%),
     radial-gradient(circle at 18% 18%, rgb(167 151 221 / 0.08) 0 1px, transparent 2px),
     radial-gradient(circle at 82% 23%, rgb(167 151 221 / 0.12) 0 1px, transparent 2px),
     radial-gradient(circle at 30% 82%, rgb(167 151 221 / 0.1) 0 1px, transparent 2px),
     linear-gradient(155deg, #10142e 0%, #191635 54%, #090d20 100%);
 }
-.preloader::before,
-.preloader::after {
-  content: "";
-  position: absolute;
-  width: min(84vw, 560px);
-  aspect-ratio: 1;
-  border: 1px solid rgb(218 207 250 / 0.08);
-  border-radius: 50%;
-  box-shadow: 0 0 70px rgb(162 145 220 / 0.08), inset 0 0 60px rgb(162 145 220 / 0.05);
-}
-.preloader::after { width: min(66vw, 430px); border-color: rgb(218 207 250 / 0.12); }
 .preloader .brandlogo {
   z-index: 1;
   width: min(70vw, 420px);
-  filter: drop-shadow(0 0 22px rgb(216 204 251 / 0.28));
-  animation: splash-pulse 2.8s ease-in-out infinite;
+  filter: none;
+  animation: splash-mark-in 850ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
-@keyframes splash-pulse {
-  0%, 100% { opacity: 0.82; transform: translateY(0) scale(1); }
-  50% { opacity: 1; transform: translateY(-5px) scale(1.018); }
+@keyframes splash-mark-in {
+  from { opacity: 0; transform: translate3d(0, 9px, 0) scale(0.96); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
 @media (max-width: 600px) {
-  .night-atmosphere__moon { top: 11%; right: 10%; width: 44px; }
-  .controls { top: max(10px, env(safe-area-inset-top)); right: max(10px, env(safe-area-inset-right)); }
-  .controls__btn { min-height: 42px; padding-inline: 1rem; }
+  .night-atmosphere__moon { top: max(11%, calc(env(safe-area-inset-top) + 44px)); right: 10%; width: 42px; }
+  .masthead { width: min(76vw, 320px); height: min(40svh, 250px); }
+  .controls {
+    top: max(10px, env(safe-area-inset-top));
+    right: max(10px, env(safe-area-inset-right));
+    gap: 0.45rem;
+  }
+  .controls__btn { min-height: 44px; padding-inline: 0.9rem; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
+@media (max-width: 380px) {
+  .controls__btn { min-height: 42px; padding-inline: 0.75rem; font-size: 0.88rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .brandlogo__shimmer,
-  .preloader .brandlogo,
+  .preloader .brandlogo { animation: none; }
   .night-atmosphere::before { animation: none; }
   .night-atmosphere { transition: none; }
 }

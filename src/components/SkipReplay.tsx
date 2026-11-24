@@ -1,25 +1,18 @@
 import { useController, useScenePhase } from "../scenes/sceneContext";
 
-/** Skip (jump to the envelope) while the sequence plays; Replay once it's open. */
+/** Skip the opening sequence; Replay is kept in the invitation's scroll flow. */
 export default function SkipReplay() {
   const controller = useController();
   const phase = useScenePhase();
-
   const showSkip = phase !== "opening" && phase !== "opened" && phase !== "seal";
-  const showReplay = phase === "opened";
+
+  if (!showSkip) return null;
 
   return (
     <div className="controls">
-      {showSkip && (
-        <button type="button" className="controls__btn" onClick={() => controller.skip()}>
-          Skip
-        </button>
-      )}
-      {showReplay && (
-        <button type="button" className="controls__btn" onClick={() => controller.replay()}>
-          Replay
-        </button>
-      )}
+      <button type="button" className="controls__btn" onClick={() => controller.skip()}>
+        Skip
+      </button>
     </div>
   );
 }

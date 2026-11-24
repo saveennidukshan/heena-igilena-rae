@@ -1,8 +1,4 @@
-/*
- * CHAMPAGNE KEEPSAKE — ivory envelope, plum lining, art-deco foil and burgundy seal.
- * The GSAP animation hooks/classes are intentionally retained so the physical opening
- * sequence remains wired exactly as before; this file changes the visual language only.
- */
+/* DREAMY NIGHT KEEPSAKE — moonlit-indigo paper, dimensional folds and celestial wax. */
 
 .envelope-stage {
   position: absolute;
@@ -15,28 +11,32 @@
 }
 .envelope-stage > * { grid-area: 1 / 1; }
 
-/* A tactile ivory envelope, edged in champagne foil. */
+/*
+ * The anchor owns screen positioning. The animated envelope is a child, so GSAP can
+ * animate y/rotation/scale without ever overwriting the 50%/50% centering transform.
+ */
+.envelope-unit-anchor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(86vw, 360px);
+  aspect-ratio: 7 / 5;
+  display: grid;
+  place-items: stretch;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* A velvet-like midnight envelope, edged in moonlit foil. */
 .env {
   position: relative;
-  width: min(86vw, 360px, 58dvh * 1.4);
-  aspect-ratio: 7 / 5;
+  width: 100%;
+  height: 100%;
   transform-style: preserve-3d;
-  will-change: transform, opacity;
-  filter:
-    drop-shadow(0 36px 52px rgb(0 0 0 / 0.48))
-    drop-shadow(0 0 28px rgb(240 192 90 / 0.18));
-}
-.env::after {
-  content: "";
-  position: absolute;
-  z-index: 6;
-  inset: 8px;
-  border: 1px solid rgb(255 246 208 / 0.36);
-  border-radius: 11px;
-  pointer-events: none;
-  box-shadow:
-    inset 0 0 0 1px rgb(112 52 50 / 0.1),
-    0 0 0 1px rgb(92 45 34 / 0.12);
+  transform-origin: 50% 54%;
+  will-change: auto;
+  isolation: isolate;
 }
 .env::before {
   content: "";
@@ -46,10 +46,22 @@
   border-radius: 15px;
   pointer-events: none;
   background:
-    linear-gradient(118deg, rgb(255 255 255 / 0.3), transparent 24% 70%, rgb(82 42 27 / 0.12)),
-    repeating-linear-gradient(8deg, transparent 0 3px, rgb(126 83 40 / 0.035) 3px 4px);
-  mix-blend-mode: screen;
-  opacity: 0.68;
+    linear-gradient(118deg, rgb(255 255 255 / 0.13), transparent 22% 68%, rgb(0 0 0 / 0.22)),
+    repeating-linear-gradient(8deg, transparent 0 3px, rgb(255 255 255 / 0.018) 3px 4px);
+  opacity: 0.58;
+}
+.env::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 8%;
+  right: 8%;
+  bottom: -5%;
+  height: 10%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgb(0 0 0 / 0.34) 0%, rgb(0 0 0 / 0.16) 48%, transparent 76%);
+  transform: translateZ(-2px);
+  pointer-events: none;
 }
 .env__part { position: absolute; inset: 0; width: 100%; height: 100%; }
 .env__back { z-index: 1; }
@@ -69,91 +81,17 @@
   height: 57%;
   border-radius: 8px 8px 4px 4px;
   background:
-    radial-gradient(ellipse at 50% 0%, rgb(255 247 218 / 0.72), transparent 68%),
-    repeating-linear-gradient(0deg, transparent 0 23px, rgb(143 96 54 / 0.06) 23px 24px),
-    linear-gradient(180deg, #fff8e8 0%, #ead4ae 100%);
+    radial-gradient(ellipse at 50% 0%, rgb(239 232 255 / 0.25), transparent 66%),
+    linear-gradient(90deg, rgb(255 255 255 / 0.035), transparent 15% 85%, rgb(0 0 0 / 0.13)),
+    repeating-linear-gradient(0deg, transparent 0 23px, rgb(205 190 244 / 0.045) 23px 24px),
+    linear-gradient(180deg, #302750 0%, #17152f 100%);
   box-shadow:
     0 8px 18px rgb(0 0 0 / 0.36),
-    inset 0 0 0 1px rgb(130 83 38 / 0.3),
-    inset 0 0 24px rgb(255 255 255 / 0.34);
-  will-change: transform;
+    inset 0 0 0 1px rgb(209 197 242 / 0.32),
+    inset 0 0 24px rgb(160 145 213 / 0.12);
+  will-change: auto;
 }
 .env__pocket { z-index: 3; }
-
-.env__address {
-  position: absolute;
-  z-index: 4;
-  left: 13%;
-  bottom: 18%;
-  display: grid;
-  justify-items: start;
-  gap: 0.28rem;
-  color: rgb(255 239 184 / 0.82);
-  font-family: var(--font-display);
-  pointer-events: none;
-  transform: rotate(-2deg);
-  text-shadow: 0 1px 2px rgb(44 17 26 / 0.36);
-}
-.env__address-kicker {
-  font-size: clamp(0.52rem, 1.8vw, 0.66rem);
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-}
-.env__address-rule {
-  width: 82px;
-  height: 1px;
-  background: linear-gradient(90deg, #f0c05a, transparent);
-  opacity: 0.8;
-}
-.env__address-copy {
-  color: rgb(255 244 211 / 0.7);
-  font-family: var(--font-body);
-  font-size: clamp(0.72rem, 2.2vw, 0.84rem);
-  line-height: 1.16;
-  letter-spacing: 0.04em;
-}
-.env__stamp {
-  position: absolute;
-  z-index: 4;
-  right: 12%;
-  bottom: 16%;
-  display: grid;
-  place-items: center;
-  width: clamp(48px, 13vw, 62px);
-  aspect-ratio: 1;
-  border: 1px solid rgb(255 224 155 / 0.7);
-  border-radius: 50%;
-  color: #ffe5a1;
-  transform: rotate(8deg);
-  pointer-events: none;
-  box-shadow:
-    inset 0 0 0 3px rgb(112 52 50 / 0.28),
-    inset 0 0 0 4px rgb(255 224 155 / 0.18),
-    0 2px 6px rgb(45 15 24 / 0.25);
-}
-.env__stamp-ring {
-  position: absolute;
-  inset: 5px;
-  border: 1px dashed rgb(255 224 155 / 0.72);
-  border-radius: inherit;
-}
-.env__stamp-star {
-  margin-top: -0.5rem;
-  font-size: 1rem;
-  line-height: 1;
-}
-.env__stamp-label {
-  position: absolute;
-  bottom: 9px;
-  font-family: var(--font-display);
-  font-size: 0.38rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  line-height: 1.1;
-  text-align: center;
-  text-transform: uppercase;
-}
 
 /* Hinged flap with a shadowed inner face. */
 .env__flap {
@@ -165,8 +103,8 @@
   transform-origin: 50% 0%;
   transform-style: preserve-3d;
   z-index: 4;
-  will-change: transform;
-  filter: drop-shadow(0 6px 8px rgb(0 0 0 / 0.3));
+  will-change: auto;
+  backface-visibility: visible;
 }
 .env__flap-face {
   position: absolute;
@@ -177,70 +115,65 @@
 }
 .env__flap-face--back { transform: rotateX(180deg); }
 
-/* Warm halo underneath the envelope. */
+/* Cool moon halo underneath the envelope. */
 .envelope__glow {
   width: min(112vw, 620px);
   height: min(82vw, 470px);
   border-radius: 50%;
   background: radial-gradient(
     closest-side,
-    rgb(240 192 90 / 0.3),
-    rgb(191 124 73 / 0.18) 42%,
-    rgb(112 52 50 / 0.1) 62%,
+    rgb(183 169 230 / 0.34),
+    rgb(119 101 177 / 0.2) 42%,
+    rgb(69 70 139 / 0.08) 62%,
     transparent 76%
   );
-  filter: blur(18px);
   opacity: 0;
   pointer-events: none;
-  will-change: opacity, transform;
+  will-change: opacity;
   z-index: 0;
 }
-.envelope__glow::before,
-.envelope__glow::after {
-  content: "";
-  position: absolute;
-  inset: 18%;
-  border: 1px solid rgb(255 218 143 / 0.14);
-  border-radius: 50%;
-  transform: rotate(12deg) scaleX(1.35);
-}
-.envelope__glow::after {
-  inset: 28%;
-  transform: rotate(-18deg) scaleX(1.5);
-  border-color: rgb(143 62 47 / 0.12);
-}
 
-/* The opening releases tiny champagne sparks. */
-.lantern-burst {
+/* Fine moonlit dust — delicate glints rather than large floating lanterns. */
+.stardust-burst {
   position: relative;
-  width: min(86vw, 360px, 58dvh * 1.4);
+  width: min(86vw, 360px);
   aspect-ratio: 7 / 5;
   z-index: 6;
   pointer-events: none;
 }
-.lantern-burst__rise {
+.stardust-burst__particle {
   position: absolute;
   left: 50%;
-  top: 38%;
-  margin-left: -16px;
-  width: 32px;
-  will-change: transform, opacity;
-}
-.lantern-burst__sway { display: block; will-change: transform; }
-.lantern-burst__svg {
+  top: 39%;
   display: block;
-  width: 32px;
-  height: auto;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  opacity: 0;
+  will-change: auto;
+}
+.stardust-burst__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 0 12px rgb(255 230 148 / 0.9)) drop-shadow(0 0 24px rgb(190 112 58 / 0.46));
+  filter: none;
 }
 
-/* ------------------------------------------------------------------ burgundy wax impression */
-.wax-seal {
+/* ------------------------------------------------------------------ celestial wax impression */
+.wax-seal-anchor {
   position: absolute;
   left: 50%;
   top: 46%;
   z-index: 5;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.wax-seal {
+  position: relative;
+  z-index: 1;
   display: grid;
   justify-items: center;
   gap: 0.78rem;
@@ -250,8 +183,9 @@
   background: transparent;
   cursor: pointer;
   pointer-events: auto;
-  transform: translate(-50%, -50%);
+  transform: none;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 .wax-seal:disabled { cursor: default; }
 .wax-seal__disc {
@@ -264,29 +198,29 @@
   padding: 18%;
   border-radius: 48% 52% 49% 51% / 51% 47% 53% 49%;
   background:
-    radial-gradient(ellipse at 31% 20%, rgb(255 231 188 / 0.64), transparent 21%),
-    radial-gradient(ellipse at 35% 27%, #c66b54 0, #8e2b2b 34%, #5b1f2b 68%, #321624 100%);
+    radial-gradient(ellipse at 31% 20%, rgb(232 224 255 / 0.82), transparent 21%),
+    radial-gradient(ellipse at 35% 27%, #9d8acb 0, #62538f 34%, #342c61 68%, #18162f 100%);
   box-shadow:
     inset 2px 3px 5px rgb(255 255 255 / 0.34),
     inset -4px -7px 12px rgb(8 7 24 / 0.72),
-    inset 0 0 0 1px rgb(255 222 157 / 0.44),
-    0 2px 0 rgb(48 16 26 / 0.9),
+    inset 0 0 0 1px rgb(229 218 255 / 0.38),
+    0 2px 0 rgb(18 15 43 / 0.9),
     0 10px 20px rgb(0 0 0 / 0.48),
-    0 0 32px rgb(216 129 65 / 0.34);
+    0 0 32px rgb(162 145 224 / 0.34);
   transform-origin: 50% 55%;
-  will-change: transform, opacity;
+  will-change: auto;
 }
 .wax-seal__disc::before {
   content: "";
   position: absolute;
   z-index: -1;
   inset: 5%;
-  border: 1px solid rgb(255 229 173 / 0.36);
+  border: 1px solid rgb(235 226 255 / 0.32);
   border-radius: inherit;
   box-shadow:
     inset 0 1px 3px rgb(255 255 255 / 0.2),
-    inset 0 -3px 5px rgb(43 12 23 / 0.5),
-    0 0 0 1px rgb(63 18 27 / 0.34);
+    inset 0 -3px 5px rgb(8 7 24 / 0.5),
+    0 0 0 1px rgb(20 16 47 / 0.34);
 }
 .wax-seal__disc::after {
   content: "";
@@ -296,53 +230,60 @@
   border-radius: inherit;
   background:
     radial-gradient(ellipse at 30% 16%, rgb(255 255 255 / 0.34), transparent 28%),
-    linear-gradient(145deg, transparent 32%, rgb(55 14 24 / 0.2) 72%, rgb(255 218 143 / 0.16));
+    linear-gradient(145deg, transparent 32%, rgb(8 6 28 / 0.2) 72%, rgb(227 216 255 / 0.16));
   mix-blend-mode: screen;
   pointer-events: none;
 }
 .wax-seal__rim {
   position: absolute;
   inset: 11%;
-  border: 1px solid rgb(255 226 164 / 0.44);
+  border: 1px solid rgb(231 221 255 / 0.4);
   border-radius: 48% 52% 47% 53%;
-  box-shadow: 0 1px 2px rgb(255 255 255 / 0.16), inset 0 0 5px rgb(55 14 24 / 0.34);
+  box-shadow: 0 1px 2px rgb(255 255 255 / 0.16), inset 0 0 5px rgb(12 9 37 / 0.34);
   pointer-events: none;
 }
 .wax-seal__emboss {
   position: absolute;
   inset: 20%;
   border-radius: 50%;
-  border: 1px solid rgb(50 14 25 / 0.34);
-  box-shadow: inset 0 1px 1px rgb(255 255 255 / 0.28), 0 1px 0 rgb(255 225 164 / 0.22);
+  border: 1px solid rgb(21 14 56 / 0.28);
+  box-shadow: inset 0 1px 1px rgb(255 255 255 / 0.28), 0 1px 0 rgb(226 217 255 / 0.18);
   pointer-events: none;
 }
-.wax-seal__disc .brandlogo {
+.wax-seal__symbol {
   z-index: 1;
-  width: 100%;
-  filter: brightness(1.8) saturate(0.35) sepia(0.22) drop-shadow(0 1px 1px rgb(43 12 23 / 0.78));
+  width: 62%;
+  height: 62%;
+  color: #eee8ff;
+  filter: drop-shadow(0 1px 1px rgb(10 7 30 / 0.78));
 }
 
-/* Individual wax chips remain independently animated by GSAP. */
-.wax-seal__break-layer {
+/* Fragments sit directly over the seal, then fly out and fall under gravity. */
+.wax-seal__break-layer,
+.wax-seal__cracks {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
   top: 10px;
   width: clamp(72px, 23vw, 96px);
   height: clamp(72px, 23vw, 96px);
-  transform: translateX(-50%);
+  margin-inline: auto;
+  transform: none;
   pointer-events: none;
 }
+.wax-seal__break-layer { z-index: 7; }
 .wax-seal__fragment {
   position: absolute;
   inset: 0;
   opacity: 0;
   border-radius: 48% 52% 49% 51%;
-  background: radial-gradient(ellipse at 31% 20%, #e0a274 0, #9e3b35 37%, #672331 72%, #321624 100%);
+  background:
+    radial-gradient(ellipse at 31% 20%, #b3a1dc 0, #75639f 37%, #40366f 72%, #1c193d 100%);
   box-shadow:
     inset 1px 2px 3px rgb(255 255 255 / 0.32),
     inset -3px -4px 7px rgb(8 6 26 / 0.58),
     0 3px 7px rgb(0 0 0 / 0.34);
-  will-change: transform, opacity;
+  will-change: auto;
 }
 .wax-seal__fragment--1 { clip-path: polygon(0 0, 50% 0, 47% 38%, 31% 48%, 0 52%); }
 .wax-seal__fragment--2 { clip-path: polygon(50% 0, 100% 0, 100% 48%, 72% 53%, 47% 38%); }
@@ -352,105 +293,129 @@
   inset: 34%;
   border-radius: 35% 65% 48% 52%;
   clip-path: polygon(50% 0, 100% 30%, 76% 100%, 12% 78%, 0 25%);
-  background: linear-gradient(145deg, #e5a56f, #9e3b35 58%, #4e1b2a);
+  background: linear-gradient(145deg, #c9b9ed, #77649f 58%, #302855);
 }
 .wax-seal__cracks {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+  z-index: 6;
   opacity: 0;
+  overflow: visible;
 }
 .wax-seal__cracks path {
   fill: none;
-  stroke: rgb(55 14 24 / 0.92);
-  stroke-width: 3.2;
+  stroke: rgb(22 15 54 / 0.94);
+  stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: bevel;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  filter: drop-shadow(0 1px 0 rgb(255 229 173 / 0.58));
+  filter: none;
 }
 .wax-seal__label {
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  color: #fff3cf;
+  color: #eee8ff;
   font-family: var(--font-display);
   font-size: var(--fs-sm);
   font-weight: 600;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  text-shadow: 0 2px 12px rgb(0 0 0 / 0.72), 0 0 20px rgb(240 192 90 / 0.42);
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.85), 0 0 20px rgb(172 154 230 / 0.52);
   white-space: nowrap;
-  will-change: opacity, transform;
+  will-change: auto;
 }
 .wax-seal__label-line {
   display: block;
   width: 15px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #f0c05a);
+  background: linear-gradient(90deg, transparent, #d6c9fb);
 }
 .wax-seal__label-line:last-child { transform: rotate(180deg); }
 .wax-seal:focus-visible { outline: none; }
 .wax-seal:focus-visible .wax-seal__disc {
-  outline: 2px solid #f6d889;
+  outline: 2px solid #e7ddff;
   outline-offset: 7px;
 }
 
-/* ------------------------------------------------------------------ warm ivory invitation card */
+/* ------------------------------------------------------------------ midnight invitation card */
+/*
+ * The opened letter is its own scroll surface. Its inner stack uses auto block margins:
+ * it stays vertically centred when it fits, but naturally starts at the top when it does
+ * not. This avoids the clipped-centre problem on short phones and short desktop windows.
+ */
 .letter-wrap {
+  position: absolute;
+  inset: 0;
   z-index: 10;
-  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+  min-height: 0;
+  width: auto;
+  height: auto;
+  padding:
+    max(18px, env(safe-area-inset-top))
+    max(18px, env(safe-area-inset-right))
+    max(22px, env(safe-area-inset-bottom))
+    max(18px, env(safe-area-inset-left));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(190 177 235 / 0.42) transparent;
+  pointer-events: auto;
   perspective: 1200px;
+  touch-action: pan-y;
+  scrollbar-gutter: stable;
 }
+.letter-stack {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 1.5vh, 16px);
+  width: min(100%, 660px);
+  min-width: 0;
+  margin-block: auto;
+}
+
 .letter {
   position: relative;
   isolation: isolate;
-  width: min(91vw, 500px);
-  max-height: calc(100vh - 32px);
-  max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 24px);
-  overflow: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  padding: clamp(1.7rem, 5.4vw, 2.8rem) clamp(1.4rem, 5.5vw, 2.75rem);
-  border-radius: 7px;
-  color: #4a2930;
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: clamp(1.45rem, 2.6vw, 2rem) clamp(1.5rem, 4.5vw, 3.1rem);
+  border-radius: 8px;
+  color: #f0eafa;
   text-align: center;
   background:
-    radial-gradient(ellipse at 50% -8%, rgb(255 246 208 / 0.78), transparent 38%),
-    radial-gradient(ellipse at 4% 92%, rgb(189 117 67 / 0.14), transparent 35%),
-    radial-gradient(circle at 14% 14%, rgb(152 92 44 / 0.34) 0 1px, transparent 1.7px),
-    radial-gradient(circle at 83% 22%, rgb(152 92 44 / 0.28) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 76% 76%, rgb(152 92 44 / 0.24) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 21% 82%, rgb(152 92 44 / 0.22) 0 1px, transparent 1.8px),
-    linear-gradient(145deg, #fff8e9 0%, #f1dfba 50%, #dfc18d 100%);
+    radial-gradient(ellipse at 50% -8%, rgb(180 165 229 / 0.24), transparent 38%),
+    radial-gradient(ellipse at 4% 92%, rgb(116 100 174 / 0.16), transparent 35%),
+    radial-gradient(circle at 14% 14%, rgb(235 226 255 / 0.62) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 83% 22%, rgb(235 226 255 / 0.5) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 76% 76%, rgb(235 226 255 / 0.44) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 21% 82%, rgb(235 226 255 / 0.42) 0 1px, transparent 1.8px),
+    linear-gradient(145deg, #242044 0%, #17182f 50%, #10152b 100%);
   box-shadow:
-    0 38px 100px rgb(0 0 0 / 0.64),
-    0 10px 28px rgb(0 0 0 / 0.36),
-    0 0 0 1px rgb(138 88 42 / 0.42),
-    inset 0 0 0 1px rgb(255 255 255 / 0.55),
-    inset 0 0 54px rgb(169 111 57 / 0.12);
-  will-change: transform, opacity;
+    0 28px 72px rgb(0 0 0 / 0.5),
+    0 8px 24px rgb(0 0 0 / 0.3),
+    0 0 0 1px rgb(222 212 255 / 0.32),
+    inset 0 0 0 1px rgb(255 255 255 / 0.07),
+    inset 0 0 54px rgb(151 133 207 / 0.1);
+  will-change: auto;
   pointer-events: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgb(190 177 235 / 0.46) transparent;
 }
-.letter::-webkit-scrollbar { width: 7px; }
-.letter::-webkit-scrollbar-thumb {
-  border: 2px solid transparent;
-  border-radius: 999px;
-  background: #b98546;
-  background-clip: padding-box;
-}
-.letter::-webkit-scrollbar-track { background: transparent; }
 .letter::before {
   content: "";
   position: absolute;
   z-index: -1;
   inset: 9px;
-  border: 1px solid rgb(138 88 42 / 0.4);
+  border: 1px solid rgb(213 204 247 / 0.38);
   border-radius: 3px;
   pointer-events: none;
 }
@@ -459,7 +424,7 @@
   position: absolute;
   z-index: -1;
   inset: 14px;
-  border: 1px solid rgb(138 88 42 / 0.18);
+  border: 1px solid rgb(213 204 247 / 0.12);
   border-radius: 2px;
   pointer-events: none;
 }
@@ -469,10 +434,10 @@
   z-index: 1;
   width: 22px;
   height: 22px;
-  border-color: #9a6734;
+  border-color: #d5c9fa;
   border-style: solid;
   opacity: 0.82;
-  filter: drop-shadow(0 0 5px rgb(240 192 90 / 0.4));
+  filter: none;
   pointer-events: none;
 }
 .letter__corner--tl { top: 17px; left: 17px; border-width: 1px 0 0 1px; }
@@ -487,8 +452,8 @@
   height: 28px;
   margin: 0 auto 0.7rem;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fffdf2, #f1d991 48%, #c58a43 100%);
-  box-shadow: 0 0 13px rgb(255 222 139 / 0.6), 0 0 34px rgb(205 129 54 / 0.3);
+  background: radial-gradient(circle at 35% 30%, #fff9ff, #d9d0ef 48%, #9f91c7 100%);
+  box-shadow: 0 0 13px rgb(220 210 255 / 0.6), 0 0 34px rgb(176 159 232 / 0.3);
 }
 .letter__moon::after {
   content: "";
@@ -498,12 +463,12 @@
   left: 9px;
   top: -4px;
   border-radius: 50%;
-  background: #fff1d2;
+  background: #242044;
 }
 .letter__eyebrow {
   display: block;
   margin: 0 0 0.42rem;
-  color: #8a5a35;
+  color: #c9bde9;
   font-family: var(--font-display);
   font-size: 0.7rem;
   font-weight: 600;
@@ -512,9 +477,17 @@
 }
 .letter__logo {
   display: block;
-  width: min(60%, 236px);
+  width: auto;
+  height: clamp(112px, 16vh, 150px);
+  max-width: min(52%, 190px);
   margin: 0 auto;
-  filter: drop-shadow(0 0 12px rgb(157 99 42 / 0.22));
+  filter: none;
+}
+.letter__logo .brandlogo__img {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
 }
 .letter__ornament {
   display: flex;
@@ -522,75 +495,78 @@
   justify-content: center;
   gap: 0.8rem;
   margin: 0.48rem auto 0.2rem;
-  color: #8c5a2f;
+  color: #ded5f4;
 }
 .letter__ornament span {
   width: 42px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #b27b3c);
+  background: linear-gradient(90deg, transparent, #c7b9e9);
 }
 .letter__ornament span:last-child { transform: rotate(180deg); }
-.letter__ornament i { font-size: 0.9rem; font-style: normal; text-shadow: 0 0 10px rgb(214 157 65 / 0.42); }
+.letter__ornament i { font-size: 0.9rem; font-style: normal; text-shadow: none; }
 .letter__kicker {
   margin: 0.05rem 0 0;
-  color: #6d3e3a;
+  color: #e8def8;
   font-family: var(--font-display);
-  font-size: clamp(1.15rem, 3.5vw, 1.42rem);
+  font-size: clamp(1.2rem, 2.2vw, 1.48rem);
   font-style: italic;
   letter-spacing: 0.045em;
 }
 .letter__salutation { margin: 1.18rem 0 0; }
 .letter__greeting {
   margin: 0;
-  color: #8c6b5b;
+  color: #bdb0dd;
   font-family: var(--font-body);
   font-size: var(--fs-sm);
   font-style: italic;
 }
 .letter__name {
   margin: 0.1rem 0 0;
-  color: #5b2b31;
+  color: #f1e9ff;
   font-family: var(--font-script);
-  font-size: clamp(2.45rem, 8vw, 3.8rem);
+  font-size: clamp(2.7rem, 5vw, 4.1rem);
   font-weight: 400;
   line-height: 1.12;
-  text-shadow: 0 0 16px rgb(170 99 48 / 0.2);
+  text-shadow: 0 0 12px rgb(193 177 242 / 0.16);
+  overflow-wrap: anywhere;
 }
-.letter__name--generic { font-size: clamp(2rem, 7vw, 3rem); }
+.letter__name--generic { font-size: clamp(2.15rem, 4vw, 3.2rem); }
 .letter__title {
   margin: 0.15rem 0 0;
-  color: #806253;
+  color: #c9c0df;
   font-family: var(--font-body);
   font-size: var(--fs-sm);
+  overflow-wrap: anywhere;
 }
 .letter__message {
-  max-width: 34rem;
-  margin: 1rem auto 0;
-  color: #5e4a42;
+  max-width: 42rem;
+  margin: 0.78rem auto 0;
+  color: #ddd6eb;
   font-family: var(--font-body);
-  font-size: clamp(1.02rem, 3.7vw, 1.18rem);
-  line-height: 1.56;
+  font-size: clamp(1.06rem, 1.65vw, 1.2rem);
+  line-height: 1.46;
+  text-wrap: pretty;
 }
 .letter__divider {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  margin: 1.15rem auto 1rem;
-  color: #9b6531;
-  text-shadow: 0 0 10px rgb(197 136 52 / 0.34);
+  margin: 0.78rem auto 0.68rem;
+  color: #d6c9f4;
+  text-shadow: none;
 }
 .letter__divider span {
   width: 27%;
   max-width: 112px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(175 116 49 / 0.72));
+  background: linear-gradient(90deg, transparent, rgb(205 192 239 / 0.72));
 }
 .letter__divider span:last-child { transform: rotate(180deg); }
 .letter__divider i { font-size: 1.1rem; font-style: normal; }
 .letter__information {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.68rem;
   margin: 0;
   text-align: left;
@@ -600,29 +576,30 @@
   align-items: flex-start;
   gap: 0.68rem;
   min-width: 0;
-  padding: 0.82rem 0.76rem;
-  border: 1px solid rgb(150 98 44 / 0.32);
+  padding: 0.62rem 0.7rem;
+  border: 1px solid rgb(195 181 235 / 0.32);
   border-radius: 4px;
-  background: linear-gradient(145deg, rgb(255 245 211 / 0.22), rgb(76 38 41 / 0.32));
+  background: linear-gradient(145deg, rgb(181 165 224 / 0.12), rgb(22 24 51 / 0.44));
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 5px 16px rgb(0 0 0 / 0.12);
 }
+.letter__detail > div { min-width: 0; }
 .letter__detail-icon {
   flex: 0 0 1.48rem;
   display: grid;
   place-items: center;
   width: 1.48rem;
   height: 1.48rem;
-  border: 1px solid rgb(157 99 42 / 0.5);
+  border: 1px solid rgb(206 194 240 / 0.5);
   border-radius: 50%;
-  color: #7d4938;
+  color: #e7def9;
   font-family: Georgia, serif;
   font-size: 1.05rem;
   line-height: 1;
-  box-shadow: 0 0 12px rgb(194 126 47 / 0.16);
+  box-shadow: none;
 }
 .letter__detail dt {
   margin: 0 0 0.16rem;
-  color: #8c5a35;
+  color: #c7b9e8;
   font-family: var(--font-display);
   font-size: 0.68rem;
   font-weight: 600;
@@ -631,60 +608,344 @@
 }
 .letter__detail dd {
   margin: 0;
-  color: #4f3430;
+  color: #f1edf8;
   font-family: var(--font-body);
-  font-size: clamp(0.92rem, 3.4vw, 1.08rem);
+  font-size: clamp(0.92rem, 1.5vw, 1.08rem);
   line-height: 1.34;
   overflow-wrap: anywhere;
 }
 .letter__tagline {
-  margin: 1.2rem 0 0;
-  color: #7e4038;
+  margin: 0.82rem 0 0;
+  color: #e4d9ff;
   font-family: var(--font-display);
-  font-size: clamp(1.15rem, 4vw, 1.42rem);
+  font-size: clamp(1.18rem, 2vw, 1.48rem);
   font-style: italic;
   line-height: 1.32;
-  text-shadow: 0 0 14px rgb(185 111 49 / 0.22);
+  text-shadow: none;
+  overflow-wrap: anywhere;
 }
-.letter__footer { margin: 1.05rem 0 0; }
+.letter__footer { margin: 0.78rem 0 0; }
 .letter__footer-rule {
   display: block;
   width: 46px;
   height: 1px;
-  margin: 0 auto 0.68rem;
-  background: linear-gradient(90deg, transparent, #b17a3b, transparent);
+  margin: 0 auto 0.46rem;
+  background: linear-gradient(90deg, transparent, #cbbde9, transparent);
 }
 .letter__closing {
   margin: 0;
-  color: #704338;
+  color: #d9ceeF;
   font-family: var(--font-display);
   font-size: 1.08rem;
   font-style: italic;
 }
 .letter__host {
   margin: 0.45rem 0 0;
-  color: #846858;
+  color: #aaa0c8;
   font-family: var(--font-body);
   font-size: var(--fs-xs);
   letter-spacing: 0.025em;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
-@media (max-width: 390px) {
-  .letter { padding: 1.45rem 1.25rem; }
-  .letter__information { grid-template-columns: 1fr; gap: 0.5rem; }
-  .letter__detail { padding: 0.65rem 0.72rem; }
-  .letter__message { margin-top: 0.8rem; }
-  .letter__divider { margin: 0.85rem auto 0.75rem; }
-  .letter__footer { margin-top: 0.8rem; }
+/* Countdown aligns exactly with the paper width and remains legible at narrow sizes. */
+.event-countdown {
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+  padding: 0.82rem 1.1rem 0.9rem;
+  border: 1px solid rgb(195 181 235 / 0.3);
+  border-radius: 6px;
+  color: #f0eafa;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgb(180 165 229 / 0.18), transparent 70%),
+    linear-gradient(145deg, rgb(36 32 68 / 0.96), rgb(16 21 43 / 0.96));
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.28), inset 0 1px 0 rgb(255 255 255 / 0.08);
+  pointer-events: none;
 }
-@media (max-height: 690px) and (min-width: 391px) {
-  .letter { padding-top: 1.2rem; padding-bottom: 1.2rem; }
-  .letter__salutation { margin-top: 0.7rem; }
-  .letter__message { margin-top: 0.65rem; }
-  .letter__divider { margin: 0.7rem auto; }
-  .letter__footer { margin-top: 0.65rem; }
+.event-countdown__eyebrow {
+  margin: 0 0 0.55rem;
+  color: #c9bde9;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
+.event-countdown__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.42rem;
+}
+.event-countdown__unit {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+  padding: 0.3rem 0.2rem;
+  border-right: 1px solid rgb(195 181 235 / 0.2);
+}
+.event-countdown__unit:last-child { border-right: 0; }
+.event-countdown__value {
+  color: #f2ecff;
+  font-family: var(--font-display);
+  font-size: clamp(1.18rem, 2.2vw, 1.55rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-shadow: none;
+}
+.event-countdown__label {
+  color: #a99fc7;
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.event-countdown__arrived {
+  margin: 0.1rem 0 0;
+  color: #eee8ff;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  font-style: italic;
+}
+.event-countdown__unavailable-text {
+  margin: 0;
+  color: #d7cfe9;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  line-height: 1.35;
+}
+
+.letter-aside {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.8rem;
+  width: 100%;
+  min-width: 0;
+}
+.letter-replay {
+  align-self: center;
+  min-height: 44px;
+  padding-inline: 1.4rem;
+  color: #eee8ff;
+  border-color: rgb(215 203 249 / 0.48);
+  background: linear-gradient(145deg, rgb(27 25 58 / 0.92), rgb(10 14 35 / 0.92));
+}
+.letter-replay:hover {
+  background: linear-gradient(145deg, rgb(66 56 111 / 0.96), rgb(25 26 59 / 0.96));
+}
+
+/* Desktop and roomy tablets. Keep the envelope proportionate to the available canvas. */
+@media (min-width: 701px) {
+  .envelope-unit-anchor { width: clamp(340px, 34vw, 450px); }
+}
+
+@media (min-width: 870px) {
+  .letter-stack {
+    display: grid;
+    grid-template-columns: minmax(0, 620px) minmax(190px, 210px);
+    align-items: center;
+    gap: 14px;
+    width: min(100%, 850px);
+  }
+  .letter { width: 100%; }
+  .event-countdown { align-self: center; padding: 1.05rem 0.9rem; }
+  .event-countdown__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem 0.25rem; }
+  .event-countdown__unit:nth-child(2) { border-right: 0; }
+  .event-countdown__unit:nth-child(3) { border-right: 1px solid rgb(195 181 235 / 0.2); }
+}
+
+@media (min-width: 1100px) {
+  .letter-stack {
+    grid-template-columns: minmax(0, 660px) minmax(210px, 230px);
+    gap: 16px;
+    width: min(100%, 930px);
+  }
+}
+
+/* Tablet and mobile portrait layouts. */
+@media (max-width: 700px) {
+  .envelope-unit-anchor { width: min(84vw, 350px); }
+  .wax-seal { gap: 0.62rem; }
+  .wax-seal__label { font-size: 0.82rem; letter-spacing: 0.16em; }
+  .wax-seal__label-line { width: 11px; }
+  .letter-wrap {
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(12px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(12px, env(safe-area-inset-left));
+  }
+  .letter-stack { width: min(100%, 600px); gap: 8px; }
+  .letter {
+    padding: clamp(1rem, 3.5vw, 1.4rem) clamp(1.05rem, 4.6vw, 1.55rem);
+    border-radius: 6px;
+  }
+  .letter::before { inset: 7px; }
+  .letter::after { inset: 11px; }
+  .letter__corner { width: 17px; height: 17px; }
+  .letter__corner--tl { top: 13px; left: 13px; }
+  .letter__corner--tr { top: 13px; right: 13px; }
+  .letter__corner--bl { bottom: 13px; left: 13px; }
+  .letter__corner--br { bottom: 13px; right: 13px; }
+  .letter__moon { width: 23px; height: 23px; margin-bottom: 0.48rem; }
+  .letter__moon::after { width: 22px; height: 22px; left: 7px; top: -3px; }
+  .letter__eyebrow { font-size: 0.61rem; letter-spacing: 0.2em; }
+  .letter__logo {
+    height: clamp(82px, 12vh, 106px);
+    max-width: min(68%, 180px);
+  }
+  .letter__ornament { margin-top: 0.35rem; }
+  .letter__kicker { font-size: clamp(1.08rem, 4.8vw, 1.3rem); }
+  .letter__salutation { margin-top: 0.62rem; }
+  .letter__name { font-size: clamp(2.15rem, 9vw, 3rem); }
+  .letter__name--generic { font-size: clamp(1.8rem, 7.2vw, 2.45rem); }
+  .letter__message { margin-top: 0.62rem; font-size: clamp(0.98rem, 3.9vw, 1.08rem); line-height: 1.44; }
+  .letter__divider { margin: 0.62rem auto 0.56rem; }
+  .letter__detail { padding: 0.65rem 0.68rem; gap: 0.58rem; }
+  .letter__detail dd { font-size: 0.98rem; }
+  .letter__tagline { margin-top: 0.65rem; font-size: 1.12rem; }
+  .letter__footer { margin-top: 0.6rem; }
+  .letter__closing { font-size: 1rem; }
+  .letter__host { font-size: 0.76rem; }
+  .event-countdown { padding: 0.62rem 0.7rem 0.66rem; border-radius: 6px; }
+  .letter-aside { gap: 0.55rem; }
+  .letter-replay { min-height: 40px; }
+  .event-countdown__eyebrow { margin-bottom: 0.42rem; font-size: 0.59rem; letter-spacing: 0.16em; }
+  .event-countdown__grid { gap: 0.12rem; }
+  .event-countdown__unit { padding-inline: 0.12rem; }
+  .event-countdown__value { font-size: clamp(1.08rem, 5vw, 1.34rem); }
+  .event-countdown__label { font-size: 0.57rem; letter-spacing: 0.04em; }
+}
+
+/* Use the narrower single-column event detail cards only on small phones. */
+@media (max-width: 420px) {
+  .letter__information { grid-template-columns: minmax(0, 1fr); gap: 0.45rem; }
+  .letter__detail { padding: 0.58rem 0.64rem; }
+}
+
+@media (max-width: 360px) {
+  .envelope-unit-anchor { width: min(82vw, 300px); }
+  .letter-wrap {
+    padding-left: max(10px, env(safe-area-inset-left));
+    padding-right: max(10px, env(safe-area-inset-right));
+  }
+  .letter { padding-inline: 0.95rem; }
+  .letter__message { font-size: 0.96rem; }
+  .event-countdown__label { font-size: 0.52rem; }
+}
+
+/* Short desktop windows and phone landscape: compact the paper, but keep it scrollable. */
+@media (min-width: 701px) and (max-height: 800px) {
+  .letter-wrap { padding-block: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-bottom)); }
+  .letter__logo { height: 112px; }
+  .letter { padding-block: 0.94rem; }
+}
+
+@media (max-height: 760px) {
+  .letter-stack { gap: 8px; }
+  .letter { padding-block: 0.9rem; }
+  .letter__moon { width: 23px; height: 23px; margin-bottom: 0.4rem; }
+  .letter__moon::after { width: 21px; height: 21px; left: 7px; top: -3px; }
+  .letter__salutation { margin-top: 0.62rem; }
+  .letter__message { margin-top: 0.58rem; }
+  .letter__divider { margin-block: 0.58rem 0.5rem; }
+  .letter__detail { padding-block: 0.5rem; }
+  .letter__tagline { margin-top: 0.62rem; }
+  .letter__footer { margin-top: 0.58rem; }
+  .letter__footer-rule { margin-bottom: 0.34rem; }
+  .event-countdown { padding-block: 0.58rem; }
+}
+
+@media (max-height: 560px) and (orientation: landscape) {
+  .envelope-unit-anchor { width: min(56vw, 300px); }
+  .letter-stack { width: min(100%, 560px); }
+  .wax-seal { gap: 0.35rem; }
+  .wax-seal__disc { width: 64px; height: 64px; }
+  .wax-seal__break-layer,
+  .wax-seal__cracks { width: 64px; height: 64px; }
+  .letter-wrap { padding-top: max(8px, env(safe-area-inset-top)); }
+  .letter { padding: 0.9rem 1.35rem; }
+  .letter__moon { display: none; }
+  .letter__salutation { margin-top: 0.5rem; }
+  .letter__message { margin-top: 0.48rem; }
+  .letter__divider { margin-block: 0.45rem; }
+  .letter__information { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .letter__footer { margin-top: 0.45rem; }
+  .event-countdown { padding-block: 0.4rem; }
+  .event-countdown__eyebrow { margin-bottom: 0.24rem; }
+}
+
+/* Short laptop / tablet landscape windows use a compact two-panel presentation. */
+@media (min-width: 740px) and (min-height: 561px) and (max-height: 650px) and (orientation: landscape) {
+  .letter-stack {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(175px, 215px);
+    align-items: center;
+    gap: 12px;
+    width: min(100%, 920px);
+  }
+  .letter { padding: 0.62rem 0.9rem; }
+  .letter__moon { display: none; }
+  .letter__eyebrow { margin-bottom: 0.2rem; font-size: 0.58rem; }
+  .letter__logo { height: 76px; }
+  .letter__ornament { margin-top: 0.22rem; }
+  .letter__kicker { font-size: 1.04rem; }
+  .letter__salutation { margin-top: 0.36rem; }
+  .letter__name { font-size: clamp(2rem, 3.5vw, 2.8rem); }
+  .letter__message { margin-top: 0.35rem; font-size: 0.96rem; line-height: 1.3; }
+  .letter__divider { margin-block: 0.3rem; }
+  .letter__information { gap: 0.38rem; }
+  .letter__detail { padding: 0.34rem 0.42rem; gap: 0.42rem; }
+  .letter__detail dd { font-size: 0.86rem; }
+  .letter__tagline { margin-top: 0.34rem; font-size: 0.96rem; }
+  .letter__footer { margin-top: 0.3rem; }
+  .letter__footer-rule { margin-bottom: 0.24rem; }
+  .letter__closing { font-size: 0.94rem; }
+  .letter__host { margin-top: 0.22rem; font-size: 0.66rem; }
+  .event-countdown { padding: 0.58rem 0.52rem; }
+  .event-countdown__eyebrow { margin-bottom: 0.36rem; font-size: 0.6rem; letter-spacing: 0.14em; }
+  .event-countdown__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.36rem 0.12rem; }
+  .event-countdown__unit:nth-child(2) { border-right: 0; }
+  .event-countdown__unit:nth-child(3) { border-right: 1px solid rgb(195 181 235 / 0.2); }
+  .letter-aside { gap: 0.55rem; }
+  .letter-replay { min-height: 40px; padding-inline: 0.8rem; font-size: 0.9rem; }
+}
+
+/* Short landscape phones/tablets get a two-panel layout instead of a very long stack. */
+@media (min-width: 620px) and (max-height: 560px) and (orientation: landscape) {
+  .letter-stack {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 190px);
+    align-items: center;
+    gap: 12px;
+    width: min(100%, 840px);
+  }
+  .letter { padding: 0.72rem 1rem; }
+  .letter__logo { height: 86px; }
+  .letter__moon { display: none; }
+  .letter__salutation { margin-top: 0.45rem; }
+  .letter__name { font-size: clamp(2rem, 4vw, 2.6rem); }
+  .letter__message { margin-top: 0.42rem; font-size: 0.98rem; line-height: 1.35; }
+  .letter__divider { margin-block: 0.38rem; }
+  .letter__information { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .letter__detail { padding: 0.42rem 0.48rem; }
+  .letter__detail dd { font-size: 0.88rem; }
+  .letter__tagline { margin-top: 0.48rem; font-size: 1rem; }
+  .letter__footer { margin-top: 0.42rem; }
+  .letter__footer-rule { margin-bottom: 0.28rem; }
+  .event-countdown { padding: 0.65rem 0.55rem; }
+  .event-countdown__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.32rem 0.12rem; }
+  .event-countdown__unit:nth-child(2) { border-right: 0; }
+  .event-countdown__unit:nth-child(3) { border-right: 1px solid rgb(195 181 235 / 0.2); }
+  .letter-aside { gap: 0.55rem; }
+  .letter-replay { min-height: 40px; padding-inline: 0.8rem; font-size: 0.9rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .env, .env__flap, .env__card, .wax-seal__disc, .wax-seal__fragment, .letter { will-change: auto; }
+  .env, .env__flap, .env__card, .wax-seal__disc, .wax-seal__fragment, .letter,
+  .stardust-burst__particle { will-change: auto; }
 }
